@@ -1,0 +1,17 @@
+.DS_Store
+
+# Local build and release output
+/build/
+/releases/
+
+# Recoverable development archives and local verification records
+/archive/
+/QA/
+/memories/
+/docs/development-history.md
+
+# Swift and Xcode local state
+/.build/
+/DerivedData/
+*.xcuserstate
+xcuserdata/
