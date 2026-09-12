@@ -15,7 +15,12 @@ A quiet lid effect for your Mac. As you close the display, your live desktop gai
 
 <p align="center"><sub>Dark glass appearance with adjustable background transparency.</sub></p>
 
-## Download
+<h2 id="download"><picture>
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/images/section-download-dark-static.svg">
+  <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/section-download-light-static.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/section-download-dark.svg">
+  <img src="docs/images/section-download-light.svg" alt="Download" width="360">
+</picture></h2>
 
 [Download HingeGlass for macOS](https://github.com/jdahd/HingeGlass/releases/latest) · [中文使用说明](使用说明.md)
 
@@ -23,7 +28,12 @@ Choose `HingeGlass-1.1.1-macOS-arm64.zip`, unzip it, and move `HingeGlass.app` t
 
 The app is ad hoc signed and not Apple-notarized. If macOS blocks it, review the warning in System Settings → Privacy & Security and use Open Anyway if available.
 
-## Run
+<h2 id="run"><picture>
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/images/section-run-dark-static.svg">
+  <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/section-run-light-static.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/section-run-dark.svg">
+  <img src="docs/images/section-run-light.svg" alt="Run" width="360">
+</picture></h2>
 
 Open `HingeGlass.app`. Requires macOS 14 or later, Apple silicon, and a compatible built-in lid-angle sensor. Allow HingeGlass in System Settings → Privacy & Security → Screen & System Audio Recording for the Desktop scene, then reopen if prompted.
 
@@ -31,7 +41,12 @@ Use **Start angle** and **Maximum blur** to tune the effect. Click **Enable** to
 
 Screen frames are processed in memory while the effect is active. No audio is captured, and screen footage is neither saved nor uploaded.
 
-## Window appearance
+<h2 id="window-appearance"><picture>
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/images/section-window-appearance-dark-static.svg">
+  <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/section-window-appearance-light-static.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/section-window-appearance-dark.svg">
+  <img src="docs/images/section-window-appearance-light.svg" alt="Window appearance" width="360">
+</picture></h2>
 
 - **Glass background** enables a native frosted glass background for the control window. Turn it off for a solid background.
 - **Transparency** adjusts the glass background from full material (0%) to fully clear (100%). Text and controls stay opaque. The value is saved; the slider is available when Glass background is enabled and macOS Reduce transparency is off.
@@ -40,11 +55,21 @@ Screen frames are processed in memory while the effect is active. No audio is ca
 
 These options change the control window only; the lid effect and desktop capture are unchanged.
 
-## Release
+<h2 id="release"><picture>
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/images/section-release-dark-static.svg">
+  <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/section-release-light-static.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/section-release-dark.svg">
+  <img src="docs/images/section-release-light.svg" alt="Release" width="360">
+</picture></h2>
 
 1.0 packages the lid effect with an application icon, About panel, bundled credits and documentation. This local build is ad hoc signed and is not Apple notarized. Rebuilding can require refreshing the Screen Recording permission.
 
-## Development
+<h2 id="development"><picture>
+  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/images/section-development-dark-static.svg">
+  <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/section-development-light-static.svg">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/section-development-dark.svg">
+  <img src="docs/images/section-development-light.svg" alt="Development" width="360">
+</picture></h2>
 
 Run `./scripts/make-icon.sh`, `./build.sh`, then `./scripts/package.sh`. The release ZIP is written to `releases/`. Local build output and development records are excluded from this repository.
 
