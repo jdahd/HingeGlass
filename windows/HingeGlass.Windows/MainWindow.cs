@@ -31,7 +31,9 @@ public sealed class MainWindow : Window
     double lastAngle=124, shown=124;
     long samples;
     readonly Stopwatch clock=Stopwatch.StartNew();
-    double previous, lastSampleTime=-1;
+    double previous;
+    EffectState? lastDrawn;
+    double lastAspect;
     public MainWindow()
     {
         Title="HingeGlass · Windows Preview 0.1";
@@ -77,7 +79,6 @@ public sealed class MainWindow : Window
     void Frame(object? sender,EventArgs e)
     {
         double now=clock.Elapsed.TotalSeconds,dt=Math.Clamp(now-previous,0,.1);previous=now;
-        if(follow.IsChecked==true && lastSampleTime>=0 && now-lastSampleTime>3){follow.IsChecked=false;status.Text="Sensor stopped updating. Manual preview restored.";}
         double target=follow.IsChecked==true?lastAngle:angle.Value;
         shown+=(target-shown)*(1-Math.Exp(-dt/.045));
         Draw();
@@ -87,6 +88,8 @@ public sealed class MainWindow : Window
         var s=EffectState.At(shown,start.Value,blur.Value);
         value.Text=$"{shown:0}°";
         double h=viewport.ActualWidth>0?viewport.ActualHeight/viewport.ActualWidth:1;
+        if(lastDrawn is EffectState old && Math.Abs(old.Width-s.Width)<.00001 && Math.Abs(old.Blur-s.Blur)<.001 && Math.Abs(old.Darkness-s.Darkness)<.00001 && h==lastAspect)return;
+        lastDrawn=s;lastAspect=h;
         // Subdivided trapezoid reduces the diagonal interpolation seam of a single quad.
         var points=new Point3DCollection();var uv=new PointCollection();var indices=new Int32Collection();
         const int rows=32;
@@ -126,7 +129,7 @@ public sealed class MainWindow : Window
     void UpdateReading(double a)
     {
         if(!double.IsFinite(a)||a<0||a>360)return;
-        lastAngle=a;lastSampleTime=clock.Elapsed.TotalSeconds;samples++;follow.IsEnabled=true;
+        lastAngle=a;samples++;follow.IsEnabled=true;
         status.Text=$"Sensor: {a:0.0}° · {samples} readings\nAngle convention depends on your device. Verify before enabling follow.";
     }
     void OpenImage()

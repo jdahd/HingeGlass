@@ -11,7 +11,7 @@ Extract the entire ZIP to a folder and open `HingeGlass.exe`. Keep the accompany
 - **Open image…** loads a local image.
 - **Take desktop snapshot** briefly hides the app and captures the primary display once. It stays in memory; this is not live desktop capture.
 - **Detect angle sensor** probes Windows' `HingeAngleSensor`. If available, move the lid slowly and inspect the angle/readings count. Do not fully close the lid during testing.
-- **Follow sensor in preview** is enabled after a valid reading. Angle conventions may differ; verify before using. It affects only the preview. If readings stop for three seconds, the app returns to manual mode.
+- **Follow sensor in preview** is enabled after a valid reading. Angle conventions may differ; verify before using. It affects only the preview. The last angle is held between sensor events; a stationary lid may not emit new readings. Use Esc to stop following.
 - **Restore preview** or **Esc** stops following and opens the preview angle.
 
 No account, network calls, audio capture, background service or automatic desktop overlay. No screen image is saved during normal use. Closing the window quits the app. This preview does not change lid-close sleep settings and does not persist preferences.
