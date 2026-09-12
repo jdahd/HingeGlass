@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+<PropertyGroup>
+<OutputType>WinExe</OutputType>
+<TargetFramework>net8.0-windows</TargetFramework>
+<UseWPF>true</UseWPF><Nullable>enable</Nullable><EnableWindowsTargeting>true</EnableWindowsTargeting>
+<AssemblyName>HingeGlass-0.1.4-Windows-x64-Setup</AssemblyName><Version>0.1.4</Version>
+<ApplicationIcon>../HingeGlass.Windows/AppIcon.ico</ApplicationIcon>
+<PublishSingleFile>true</PublishSingleFile><IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract><EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+</PropertyGroup>
+<ItemGroup>
+<Resource Include="../../Resources/AppIcon.png" Link="Brand.png"/>
+<EmbeddedResource Include="../../installer-output/HingeGlass-0.1.4-Windows-x64-Setup.exe" LogicalName="HingeGlass.Payload.exe"/>
+</ItemGroup>
+</Project>

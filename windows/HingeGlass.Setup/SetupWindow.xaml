@@ -1,0 +1,60 @@
+<Window x:Class="HingeGlass.Setup.SetupWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+ Title="HingeGlass Setup" Width="940" Height="630" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None" AllowsTransparency="True" Background="Transparent" FontFamily="Segoe UI" Foreground="#172334">
+ <Window.Resources>
+  <Style x:Key="Primary" TargetType="Button">
+   <Setter Property="Foreground" Value="White"/><Setter Property="Background" Value="#087CF7"/><Setter Property="BorderThickness" Value="0"/><Setter Property="Padding" Value="26,15"/><Setter Property="FontSize" Value="16"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="Cursor" Value="Hand"/>
+   <Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button"><Border x:Name="Surface" Background="{TemplateBinding Background}" CornerRadius="25" Padding="{TemplateBinding Padding}"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border><ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter TargetName="Surface" Property="Background" Value="#006ADD"/></Trigger><Trigger Property="IsPressed" Value="True"><Setter TargetName="Surface" Property="Opacity" Value=".8"/></Trigger><Trigger Property="IsEnabled" Value="False"><Setter TargetName="Surface" Property="Opacity" Value=".55"/></Trigger><Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="Surface" Property="BorderBrush" Value="#80BFFF"/><Setter TargetName="Surface" Property="BorderThickness" Value="3"/></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter>
+  </Style>
+  <Style x:Key="Quiet" TargetType="Button" BasedOn="{StaticResource Primary}"><Setter Property="Background" Value="#E6EEF6"/><Setter Property="Foreground" Value="#263B50"/></Style>
+ </Window.Resources>
+ <Border Margin="18" CornerRadius="25" Background="#FAFCFF" BorderBrush="#D7E3EF" BorderThickness="1">
+  <Border.Effect><DropShadowEffect BlurRadius="25" ShadowDepth="4" Opacity=".15" Color="#163754"/></Border.Effect>
+  <Grid ClipToBounds="True">
+   <Grid.ColumnDefinitions><ColumnDefinition Width="370"/><ColumnDefinition/></Grid.ColumnDefinitions>
+   <Border CornerRadius="24,0,0,24"><Border.Background><LinearGradientBrush StartPoint="0,0" EndPoint="1,1"><GradientStop Color="#F6FBFF"/><GradientStop Color="#DDEFFF" Offset=".6"/><GradientStop Color="#EFF0FF" Offset="1"/></LinearGradientBrush></Border.Background></Border>
+   <Canvas Grid.Column="0" ClipToBounds="True" IsHitTestVisible="False">
+    <Ellipse x:Name="Halo" Width="330" Height="330" Canvas.Left="-25" Canvas.Top="100" Fill="#80B8DEFF"><Ellipse.Effect><BlurEffect Radius="48"/></Ellipse.Effect><Ellipse.RenderTransform><TranslateTransform/></Ellipse.RenderTransform></Ellipse>
+    <Ellipse x:Name="HaloTwo" Width="240" Height="240" Canvas.Left="160" Canvas.Top="290" Fill="#80D2C9FF"><Ellipse.Effect><BlurEffect Radius="45"/></Ellipse.Effect><Ellipse.RenderTransform><TranslateTransform/></Ellipse.RenderTransform></Ellipse>
+   </Canvas>
+   <TextBlock Margin="32,28,0,0" VerticalAlignment="Top" Text="HingeGlass" FontSize="17" FontWeight="SemiBold" Foreground="#365069"/>
+   <Grid x:Name="IconStage" Margin="38,92,38,114" RenderTransformOrigin=".5,.5"><Grid.RenderTransform><TransformGroup><ScaleTransform/><TranslateTransform/></TransformGroup></Grid.RenderTransform>
+    <Image Source="Brand.png" Stretch="Uniform"><Image.Effect><DropShadowEffect BlurRadius="35" ShadowDepth="15" Opacity=".14" Color="#4778AA"/></Image.Effect></Image>
+   </Grid>
+   <StackPanel Margin="34,0,34,42" VerticalAlignment="Bottom">
+    <TextBlock Text="Made for a softer view." FontSize="17" FontWeight="SemiBold" Foreground="#314B67"/>
+    <TextBlock Text="By jux · Windows preview" FontSize="13" Margin="0,8,0,0" Foreground="#546D84"/>
+   </StackPanel>
+   <Border Grid.ColumnSpan="2" Height="44" VerticalAlignment="Top" Background="Transparent" MouseLeftButtonDown="DragBar" Margin="0,0,62,0"/>
+   <Button Grid.Column="1" Content="×" HorizontalAlignment="Right" VerticalAlignment="Top" Width="34" Height="34" Margin="0,14,14,0" FontSize="24" Background="Transparent" BorderThickness="0" Foreground="#617285" Click="CloseClick" ToolTip="Close installer"/>
+   <Grid x:Name="ContentStage" Grid.Column="1" Margin="42,74,38,36" RenderTransformOrigin=".5,.5"><Grid.RenderTransform><TranslateTransform/></Grid.RenderTransform>
+    <StackPanel x:Name="Welcome">
+     <TextBlock Text="WINDOWS PREVIEW  0.1.4" Foreground="#0065C8" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,20"/>
+     <TextBlock Text="A little motion.&#10;A softer view." FontSize="40" FontWeight="SemiBold" LineHeight="48" LineStackingStrategy="BlockLineHeight"/>
+     <TextBlock Text="A new perspective on your screen." FontSize="17" Foreground="#53677B" Margin="0,18,0,0" TextWrapping="Wrap"/>
+     <TextBlock Text="Explore blur and perspective. Try your own images, and discover whether your laptop can read its lid angle." FontSize="14" Foreground="#53677B" LineHeight="22" TextWrapping="Wrap" Margin="0,16,0,0"/>
+     <Button x:Name="InstallButton" Style="{StaticResource Primary}" Content="Install HingeGlass   →" HorizontalAlignment="Left" Margin="0,28,0,0" Click="InstallClick"/>
+     <TextBlock Text="For your account. No admin access needed." FontSize="12" Foreground="#5A6D80" Margin="0,13,0,0"/>
+     <TextBlock Text="Preview inside the app; live desktop effects are not included yet." FontSize="12" Foreground="#66798C" TextWrapping="Wrap" Margin="0,22,0,0"/>
+    </StackPanel>
+    <StackPanel x:Name="Installing" Visibility="Collapsed" VerticalAlignment="Center">
+     <TextBlock Text="Making room&#10;for HingeGlass." FontSize="36" FontWeight="SemiBold" LineHeight="45"/>
+     <TextBlock x:Name="InstallStatus" Text="Preparing your installation…" FontSize="16" Foreground="#53677B" Margin="0,22,0,28" TextWrapping="Wrap"/>
+     <ProgressBar IsIndeterminate="True" Height="5" Foreground="#087CF7" Background="#E1EBF5" BorderThickness="0"/>
+     <TextBlock Text="This only takes a moment." FontSize="13" Foreground="#66798C" Margin="0,18,0,0"/>
+    </StackPanel>
+    <StackPanel x:Name="Complete" Visibility="Collapsed" VerticalAlignment="Center">
+     <TextBlock Text="✓" Foreground="#087CF7" FontSize="44" Margin="0,0,0,18"/>
+     <TextBlock Text="Hello,&#10;HingeGlass." FontSize="44" FontWeight="SemiBold" LineHeight="52"/>
+     <TextBlock Text="You're all set. Start with the angle slider, then check your lid sensor." FontSize="16" Foreground="#53677B" TextWrapping="Wrap" LineHeight="25" Margin="0,20,0,24"/>
+     <Button Style="{StaticResource Primary}" Content="Open HingeGlass   →" HorizontalAlignment="Left" Click="OpenClick"/>
+     <Button Style="{StaticResource Quiet}" Content="Done" HorizontalAlignment="Left" Margin="0,12,0,0" Click="CloseClick"/>
+    </StackPanel>
+    <StackPanel x:Name="Failure" Visibility="Collapsed" VerticalAlignment="Center">
+     <TextBlock Text="Let's try again." FontSize="34" FontWeight="SemiBold"/>
+     <TextBlock x:Name="ErrorText" FontSize="15" Foreground="#53677B" TextWrapping="Wrap" Margin="0,24,0,24"/>
+     <Button Style="{StaticResource Primary}" Content="Retry installation" HorizontalAlignment="Left" Click="InstallClick"/>
+    </StackPanel>
+   </Grid>
+  </Grid>
+ </Border>
+</Window>

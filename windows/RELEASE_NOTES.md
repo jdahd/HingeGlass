@@ -1,10 +1,8 @@
-Windows Preview 0.1.3 refines the Setup experience with an ice-blue palette, larger Segoe UI typography, a branded welcome, clear step labels and a redesigned completion page.
+Windows Preview 0.1.4 introduces a custom animated Setup: floating glass icon, softly moving light, large typography, smooth stage transitions, installation status and a completion screen. The underlying installer/uninstaller remains per-user Inno Setup.
 
-**Recommended:** download `HingeGlass-0.1.3-Windows-x64-Setup.exe`, double-click, and follow the wizard. Installs for your Windows user account without administrator access. Start menu shortcut included; desktop shortcut optional. Uninstall in Settings → Apps.
+Download Setup.exe and click **Install HingeGlass**, then **Open HingeGlass**. A Start menu shortcut is created; administrator access is not required. ZIP portable download remains available alongside Setup.
 
-安装方法：下载 Setup.exe 并双击，跟随安装向导即可。安装后从开始菜单打开 HingeGlass。仍然是 Windows x64 测试版，不是鸿蒙版，也不是完整的实时桌面覆盖效果。安装包尚未签名，Windows 可能显示安全提示。
-
-Download `HingeGlass-0.1.3-Windows-x64-preview.zip`, extract the **entire folder**, then open `HingeGlass.exe`. Windows 10 version 2004+ / Windows 11 x64; the .NET runtime is included.
+Download `HingeGlass-0.1.4-Windows-x64-preview.zip`, extract the **entire folder**, then open `HingeGlass.exe`. Windows 10 version 2004+ / Windows 11 x64; the .NET runtime is included.
 
 ### Included
 - Manual angle, start angle and blur controls.

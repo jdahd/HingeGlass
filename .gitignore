@@ -24,3 +24,8 @@ windows/**/obj/
 
 /installer-output/
 /installer-preview.png
+
+/bootstrapper-output/
+/installer-progress.png
+/installer-finished.png
+/installer-error.png
