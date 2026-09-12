@@ -1,12 +1,12 @@
-# HingeGlass · Windows Preview 0.1.4
+# HingeGlass · Windows Preview 0.2.0
 
-[Download Windows Preview](https://github.com/jdahd/HingeGlass/releases/tag/windows-v0.1.4-preview)
+[Download Windows Preview](https://github.com/jdahd/HingeGlass/releases/tag/windows-v0.2.0-preview)
 
 Experimental Windows x64 preview. This is a separate early Windows implementation, not feature parity with the Mac release. Windows 10 version 2004 or later / Windows 11. Windows-on-ARM and HarmonyOS are not validated targets.
 
 ## Install (recommended)
 
-Download `HingeGlass-0.1.4-Windows-x64-Setup.exe` from the release page and double-click it. Click Install HingeGlass in the animated English installer, then Open HingeGlass when it finishes. The installer respects Windows client-area animation settings. It installs for the current user, creates a Start menu entry, without a desktop shortcut. Administrator access is not required. Uninstall via Windows Settings → Apps. The installer uses the HingeGlass icon and brand name; it is unsigned, so Windows may display a reputation warning.
+Download `HingeGlass-0.2.0-Windows-x64-Setup.exe` from the release page and double-click it. Click Install HingeGlass in the animated English installer, then Open HingeGlass when it finishes. The installer respects Windows client-area animation settings. It installs for the current user, creates a Start menu entry, without a desktop shortcut. Administrator access is not required. Uninstall via Windows Settings → Apps. The installer uses the HingeGlass icon and brand name; it is unsigned, so Windows may display a reputation warning.
 
 The ZIP remains available for portable use.
 
@@ -41,3 +41,13 @@ Include computer model, Windows version, whether the app opens, sensor status, w
 GitHub Actions builds on Windows, runs effect boundary checks and a UI startup/render smoke check, verifies the animated installer motion and complete installation/uninstallation, then uploads a portable ZIP and Setup and a generated sample-scene screenshot. `--self-test` exits with a test result; `--ui-smoke` explicitly writes `windows-preview.png` using the generated landscape only. Real hardware sensor and desktop capture testing are still needed.
 
 Effect formulas are adapted from the Mac renderer, derived from Ruixiang Huang's Macbook_Duo_Effect (MIT). See bundled ThirdPartyNotices.txt. The existing HingeGlass icon is reused.
+
+## Live desktop and compatibility monitor (0.2.0)
+
+Choose a display and enable **Enable live desktop**. Lower **Manual angle** below **Start angle**, or detect a sensor and enable **Follow lid angle**. The settings stay clear above the effect. Expand above the start angle to remove the effect and stop capture; live mode stays armed.
+
+**Ctrl+Alt+Esc** restores from any app. **Pause and restore** stops live mode and following. Sleep, lock, display changes and capture errors also pause it. If the global shortcut cannot register, live mode is blocked. Clicks reach original desktop coordinates, not the transformed visual positions.
+
+The **Compatibility monitor** shows recent angles, event frequency, longest interval, large steps, render callbacks and capture state. Move the lid slowly to verify a real changing signal. Stationary time can lower the reported event rate; this alone does not prove poor sensor performance. Copy diagnostics for feedback. This is a diagnostic aid, not a supported-model certification.
+
+This version adds a bounded CPU/GDI live capture path, up to 1600px wide and 30 captures per second, with WPF effects. It is not a promise of Mac performance or visual parity. Physical lid response, mixed DPI, graphics drivers and protected content still require real-device checks. The earlier sections describing snapshot-only preview apply to 0.1.x; live mode is now available separately from image/snapshot preview.

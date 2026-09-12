@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <AssemblyName>HingeGlass</AssemblyName>
-    <Version>0.1.4</Version>
+    <Version>0.2.0</Version>
     <ApplicationIcon>AppIcon.ico</ApplicationIcon>
   </PropertyGroup>
 </Project>
