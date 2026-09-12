@@ -71,10 +71,9 @@ public sealed partial class MainWindow
         // Exercise real desktop capture, exclusion, threshold restoration and cleanup on Windows.
         if(!hotkey)throw new Exception("Hotkey registration failed");
         var screen=System.Windows.Forms.Screen.PrimaryScreen!;
-        var fixture=new Window{WindowStyle=WindowStyle.None,WindowState=WindowState.Maximized,Background=Brushes.Lime,ShowInTaskbar=false};
+        var fixture=await DesktopTestFixture.Create();
         Width=MinWidth;Height=MinHeight;Left=screen.Bounds.Left;Top=screen.Bounds.Top;
-        int clicks=0;fixture.MouseDown+=(_,_)=>clicks++;
-        fixture.Show();Activate();
+        Activate();
         try {
         angle.Value=75;live.IsChecked=true;
         for(int i=0;i<60 && (desktop==null||desktop.Frames<3);i++)await Task.Delay(100);
@@ -86,8 +85,8 @@ public sealed partial class MainWindow
         if(pixel[1]<200||pixel[0]>50||pixel[2]>50)throw new Exception($"Overlay exclusion failed: {pixel[0]},{pixel[1]},{pixel[2]}");
         SetCursorPos(screen.Bounds.Right-50,screen.Bounds.Top+screen.Bounds.Height/2);
         mouse_event(2,0,0,0,UIntPtr.Zero);mouse_event(4,0,0,0,UIntPtr.Zero);await Task.Delay(200);
-        if(clicks!=1)throw new Exception($"Desktop mouse input blocked; clicks={clicks}; screen={screen.Bounds}; controls={Left},{Top},{ActualWidth},{ActualHeight}");
-        fixture.Background=Brushes.Red;
+        if(fixture.Clicks!=1)throw new Exception($"Desktop mouse input blocked; clicks={fixture.Clicks}; screen={screen.Bounds}; controls={Left},{Top},{ActualWidth},{ActualHeight}");
+        fixture.Red();
         for(int i=0;i<30;i++){
             await Task.Delay(100);
             var second=DesktopEffect.Capture(screen.Bounds);
@@ -104,7 +103,7 @@ public sealed partial class MainWindow
         if(desktop!=null)throw new Exception("Expansion failed");
         RestoreDesktop("Smoke complete");
         System.IO.File.WriteAllText("desktop-test.txt","Live frames, mouse pass-through, global shortcut input, shortcut restoration, expansion restoration passed. Live underlying color change and overlay exclusion passed on hosted runner. Physical sensor and device performance need QA.");
-        } finally {RestoreDesktop("Test cleanup");fixture.Close();}
+        } finally {RestoreDesktop("Test cleanup");await fixture.Close();}
     }
     [DllImport("user32.dll")]static extern bool SetCursorPos(int x,int y);
     [DllImport("user32.dll")]static extern void mouse_event(uint flags,uint x,uint y,uint data,UIntPtr extra);
