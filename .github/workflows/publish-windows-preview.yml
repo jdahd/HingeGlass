@@ -32,5 +32,5 @@ jobs:
           $setup = 'verified/installer-output/HingeGlass-0.1.2-Windows-x64-Setup.exe'
           $expectedSetup = ((Get-Content "$setup.sha256").Trim() -split '\s+')[0]
           if ((Get-FileHash $setup -Algorithm SHA256).Hash.ToLower() -ne $expectedSetup) { throw 'Installer checksum mismatch' }
-          gh release create windows-v0.1.2-preview $zip "$zip.sha256" $setup "$setup.sha256" verified/windows-preview.png verified/installer-preview.png --target $run.head_sha --title 'HingeGlass Windows 0.1.2 Preview' --notes-file windows/RELEASE_NOTES.md --prerelease --latest=false
+          gh release create windows-v0.1.2-preview $zip "$zip.sha256" $setup "$setup.sha256" verified/windows-preview.png --target $run.head_sha --title 'HingeGlass Windows 0.1.2 Preview' --notes-file windows/RELEASE_NOTES.md --prerelease --latest=false
           if ($LASTEXITCODE) { throw 'Release creation failed' }
