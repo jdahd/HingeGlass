@@ -64,7 +64,7 @@ jobs:
           if ($LASTEXITCODE) { throw 'Setup build failed' }
           $setup = (Resolve-Path bootstrapper-output/HingeGlass-0.1.4-Windows-x64-Setup.exe).Path
           $target = Join-Path $env:RUNNER_TEMP 'HingeGlass-Branded-Test'
-          $p = Start-Process $setup -ArgumentList @('--installer-smoke','--test-dir', $target) -PassThru
+          $p = Start-Process $setup -ArgumentList @('--installer-smoke','--verify-motion','--test-dir', $target) -PassThru
           if (!$p.WaitForExit(240000)) { $p.Kill(); throw 'Animated Setup timed out' }
           if ($p.ExitCode -ne 0) { throw 'Animated Setup installation failed' }
           foreach ($mode in @('--self-test','--ui-smoke')) {
@@ -95,5 +95,6 @@ jobs:
           path: |
             installer-preview.png
             installer-progress.png
+            installer-motion.png
             installer-finished.png
           retention-days: 7

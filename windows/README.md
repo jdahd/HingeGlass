@@ -38,6 +38,6 @@ Include computer model, Windows version, whether the app opens, sensor status, w
 
 `dotnet publish HingeGlass.Windows/HingeGlass.Windows.csproj -c Release -r win-x64 --self-contained true`
 
-GitHub Actions builds on Windows, runs effect boundary checks and a UI startup/render smoke check, then uploads a portable ZIP and a generated sample-scene screenshot. `--self-test` exits with a test result; `--ui-smoke` explicitly writes `windows-preview.png` using the generated landscape only. Real hardware sensor and desktop capture testing are still needed.
+GitHub Actions builds on Windows, runs effect boundary checks and a UI startup/render smoke check, verifies the animated installer motion and complete installation/uninstallation, then uploads a portable ZIP and Setup and a generated sample-scene screenshot. `--self-test` exits with a test result; `--ui-smoke` explicitly writes `windows-preview.png` using the generated landscape only. Real hardware sensor and desktop capture testing are still needed.
 
 Effect formulas are adapted from the Mac renderer, derived from Ruixiang Huang's Macbook_Duo_Effect (MIT). See bundled ThirdPartyNotices.txt. The existing HingeGlass icon is reused.

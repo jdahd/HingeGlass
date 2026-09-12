@@ -20,6 +20,7 @@ public partial class SetupWindow : Window
     public SetupWindow(string[] arguments)
     {
         InitializeComponent();args=arguments;
+        if(Array.IndexOf(args,"--installer-smoke")>=0 && Array.IndexOf(args,"--verify-motion")>=0) motion=true;
         installDir=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"Programs","HingeGlass");
         int index=Array.IndexOf(args,"--test-dir");
         if(index>=0 && index+1<args.Length && Array.IndexOf(args,"--installer-smoke")>=0) installDir=Path.GetFullPath(args[index+1]);
@@ -27,6 +28,12 @@ public partial class SetupWindow : Window
             AnimateEntrance();
             if(Array.IndexOf(args,"--installer-smoke")>=0){
                 await Task.Delay(900);Capture("installer-preview.png");
+                if(Array.IndexOf(args,"--verify-motion")>=0){
+                    var transform=(TranslateTransform)((TransformGroup)IconStage.RenderTransform).Children[1];
+                    double first=transform.Y;await Task.Delay(650);double second=transform.Y;
+                    if(Math.Abs(first-second)<.01){Application.Current.Shutdown(2);return;}
+                    Capture("installer-motion.png");
+                }
                 bool ok=await Install();
                 await Task.Delay(700);Capture(ok?"installer-finished.png":"installer-error.png");
                 Application.Current.Shutdown(ok?0:1);

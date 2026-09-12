@@ -18,7 +18,7 @@
    </Canvas>
    <TextBlock Margin="32,28,0,0" VerticalAlignment="Top" Text="HingeGlass" FontSize="17" FontWeight="SemiBold" Foreground="#365069"/>
    <Grid x:Name="IconStage" Margin="38,92,38,114" RenderTransformOrigin=".5,.5"><Grid.RenderTransform><TransformGroup><ScaleTransform/><TranslateTransform/></TransformGroup></Grid.RenderTransform>
-    <Image Source="Brand.png" Stretch="Uniform"><Image.Effect><DropShadowEffect BlurRadius="35" ShadowDepth="15" Opacity=".14" Color="#4778AA"/></Image.Effect></Image>
+    <Image Source="Brand.png" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality"><Image.Effect><DropShadowEffect BlurRadius="35" ShadowDepth="15" Opacity=".14" Color="#4778AA"/></Image.Effect></Image>
    </Grid>
    <StackPanel Margin="34,0,34,42" VerticalAlignment="Bottom">
     <TextBlock Text="Made for a softer view." FontSize="17" FontWeight="SemiBold" Foreground="#314B67"/>
