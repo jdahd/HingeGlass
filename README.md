@@ -1,12 +1,12 @@
-# HingeGlass 1.0
+# HingeGlass
 
 A quiet lid effect for your Mac. As you close the display, your live desktop gains perspective, progressive blur and dimming. The English settings panel stays clear and floats above the effect.
 
 <p align="center">
-  <img src="docs/images/hingeglass.png" alt="HingeGlass control panel with lid angle, start angle, maximum blur and the built-in Landscape preview" width="420">
+  <img src="docs/images/hingeglass-glass-desktop.jpg" alt="HingeGlass floating over the desktop with dark glass appearance and 42% background transparency" width="100%">
 </p>
 
-<p align="center"><sub>The control panel with the built-in Landscape preview.</sub></p>
+<p align="center"><sub>Dark glass appearance with adjustable background transparency.</sub></p>
 
 ## Download
 
