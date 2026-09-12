@@ -63,7 +63,7 @@ internal sealed class DesktopEffect : Window
             if(cancellation.IsCancellationRequested)return;
             image.ImageSource=frame;Frames++;LastFrame=clock.Elapsed.TotalSeconds;
             await Task.Delay(33,cancellation.Token);
-        }}catch(OperationCanceledException){}catch(Exception ex){Failed?.Invoke($"Capture stopped (0x{ex.HResult:X8})");Close();}
+        }}catch(OperationCanceledException){}catch(Exception ex){if(cancellation.IsCancellationRequested)return;Failed?.Invoke($"Capture stopped (0x{ex.HResult:X8})");Close();}
     }
     internal static BitmapSource Capture(System.Drawing.Rectangle b)
     {

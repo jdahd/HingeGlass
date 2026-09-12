@@ -86,14 +86,18 @@ public sealed partial class MainWindow
         var second=DesktopEffect.Capture(screen.Bounds);
         second.CopyPixels(new Int32Rect(second.PixelWidth-30,second.PixelHeight/2,1,1),pixel,4,0);
         if(pixel[2]<200||pixel[0]>50||pixel[1]>50)throw new Exception("Live source did not change");
-        RestoreDesktop("Test restore");await Task.Delay(100);
+        // Deliver the registered shortcut through Windows keyboard input, not a direct restore call.
+        keybd_event(0x11,0,0,UIntPtr.Zero);keybd_event(0x12,0,0,UIntPtr.Zero);keybd_event(0x1B,0,0,UIntPtr.Zero);
+        keybd_event(0x1B,0,2,UIntPtr.Zero);keybd_event(0x12,0,2,UIntPtr.Zero);keybd_event(0x11,0,2,UIntPtr.Zero);
+        await Task.Delay(300);
         if(desktop!=null||live.IsChecked==true||Topmost)throw new Exception("Restore failed");
         angle.Value=75;live.IsChecked=true;await Task.Delay(1500);angle.Value=150;await Task.Delay(600);
         if(desktop!=null)throw new Exception("Expansion failed");
         RestoreDesktop("Smoke complete");
-        System.IO.File.WriteAllText("desktop-test.txt","Live frames, global shortcut registration, manual restoration, expansion restoration passed. Live underlying color change and overlay exclusion passed on hosted runner. Physical sensor and device performance need QA.");
+        System.IO.File.WriteAllText("desktop-test.txt","Live frames, global shortcut input, shortcut restoration, expansion restoration passed. Live underlying color change and overlay exclusion passed on hosted runner. Physical sensor and device performance need QA.");
         } finally {RestoreDesktop("Test cleanup");fixture.Close();}
     }
+    [DllImport("user32.dll")]static extern void keybd_event(byte key,byte scan,uint flags,UIntPtr extra);
     [DllImport("user32.dll",SetLastError=true)]static extern bool RegisterHotKey(IntPtr h,int id,uint modifiers,uint key);
     [DllImport("user32.dll")]static extern bool UnregisterHotKey(IntPtr h,int id);
 }
