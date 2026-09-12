@@ -32,6 +32,7 @@ public sealed partial class MainWindow : Window
     long samples;
     readonly Stopwatch clock=Stopwatch.StartNew();
     double previous;
+    readonly System.Windows.Threading.DispatcherTimer heartbeat=new(){Interval=TimeSpan.FromMilliseconds(33)};
     EffectState? lastDrawn;
     double lastAspect;
     public MainWindow()
@@ -71,7 +72,8 @@ public sealed partial class MainWindow : Window
         follow.Checked+=(_,_)=>angle.IsEnabled=false;follow.Unchecked+=(_,_)=>angle.IsEnabled=true;
         SizeChanged+=(_,_)=>Draw();
         System.Windows.Media.CompositionTarget.Rendering+=Frame;
-        Closed+=(_,_)=>{StopDesktop(); UnregisterDesktopEvents(); closed=true;System.Windows.Media.CompositionTarget.Rendering-=Frame;if(sensor!=null)sensor.ReadingChanged-=Reading;};
+        heartbeat.Tick+=(_,_)=>{if(clock.Elapsed.TotalSeconds-previous>.08)Frame(heartbeat,EventArgs.Empty);};heartbeat.Start();
+        Closed+=(_,_)=>{heartbeat.Stop();StopDesktop(); UnregisterDesktopEvents(); closed=true;System.Windows.Media.CompositionTarget.Rendering-=Frame;if(sensor!=null)sensor.ReadingChanged-=Reading;};
         KeyDown+=(_,e)=>{if(e.Key==System.Windows.Input.Key.Escape){RestoreDesktop("Restored");}};
         InitializeDesktopEvents();
         Draw();
@@ -80,6 +82,7 @@ public sealed partial class MainWindow : Window
     static void AddSlider(Panel p,string name,Slider s){var label=new TextBlock{Margin=new Thickness(0,10,0,5)};void Update()=>label.Text=$"{name}   {s.Value:0}";s.ValueChanged+=(_,_)=>Update();Update();p.Children.Add(label);p.Children.Add(s);}
     void Frame(object? sender,EventArgs e)
     {
+        if(!ReferenceEquals(sender,heartbeat))renderCount++;
         double now=clock.Elapsed.TotalSeconds,dt=Math.Clamp(now-previous,0,.1);previous=now;
         double target=follow.IsChecked==true?lastAngle:angle.Value;
         shown+=(target-shown)*(1-Math.Exp(-dt/.045));

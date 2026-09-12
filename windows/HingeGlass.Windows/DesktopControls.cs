@@ -46,7 +46,6 @@ public sealed partial class MainWindow
     void StopDesktop(){generation++;desktop?.Close();desktop=null;Topmost=false;if(handle!=IntPtr.Zero)DesktopEffect.SetWindowDisplayAffinity(handle,0);captureStatus="Off";}
     async void UpdateDesktop(double now)
     {
-        renderCount++;
         if(now-statsTime>=.5){renderFps=renderCount/(now-statsTime);renderCount=0;statsTime=now;diagnostics.Text=monitor.Report(now,renderFps,captureStatus);var history=monitor.History;graph.Points=new PointCollection(history.Select((r,i)=>new Point(i*250.0/Math.Max(1,history.Length-1),78-Math.Clamp(r.Angle,0,180)/180*76)));}
         if(live.IsChecked!=true)return;
         // Expansion removes the overlay and stops capture, while keeping follow armed.
@@ -101,8 +100,11 @@ public sealed partial class MainWindow
         if(desktop!=null||live.IsChecked==true||Topmost)throw new Exception("Restore failed");
         angle.Value=75;live.IsChecked=true;await Task.Delay(1500);angle.Value=150;await Task.Delay(600);
         if(desktop!=null)throw new Exception("Expansion failed");
-        RestoreDesktop("Smoke complete");
-        System.IO.File.WriteAllText("desktop-test.txt","Live frames, mouse pass-through, global shortcut input, shortcut restoration, expansion restoration passed. Live underlying color change and overlay exclusion passed on hosted runner. Physical sensor and device performance need QA.");
+        WindowState=WindowState.Minimized;angle.Value=75;
+        for(int i=0;i<50 && desktop==null;i++)await Task.Delay(100);
+        if(desktop==null)throw new Exception("Minimized follow loop stopped");
+        RestoreDesktop("Smoke complete");WindowState=WindowState.Normal;
+        System.IO.File.WriteAllText("desktop-test.txt","Live frames, mouse pass-through, global shortcut input, shortcut restoration, expansion restoration and minimized activation passed. Live underlying color change and overlay exclusion passed on hosted runner. Physical sensor and device performance need QA.");
         } finally {RestoreDesktop("Test cleanup");await fixture.Close();}
     }
     [DllImport("user32.dll")]static extern bool SetCursorPos(int x,int y);
