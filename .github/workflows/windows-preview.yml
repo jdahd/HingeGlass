@@ -43,6 +43,20 @@ jobs:
           & $compiler windows/installer/HingeGlass.iss
           if ($LASTEXITCODE) { throw 'Installer compilation failed' }
           $setup = (Resolve-Path installer-output/HingeGlass-0.1.2-Windows-x64-Setup.exe).Path
+          # Capture the actual welcome wizard on the isolated CI desktop.
+          Add-Type -AssemblyName System.Windows.Forms
+          Add-Type -AssemblyName System.Drawing
+          $wizard = Start-Process $setup -ArgumentList '/NORESTART' -PassThru
+          try {
+            Start-Sleep -Seconds 4
+            $bounds = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+            $image = New-Object System.Drawing.Bitmap($bounds.Width, $bounds.Height)
+            $graphics = [System.Drawing.Graphics]::FromImage($image)
+            try {
+              $graphics.CopyFromScreen($bounds.Location, [System.Drawing.Point]::Empty, $bounds.Size)
+              $image.Save((Join-Path $pwd 'installer-preview.png'), [System.Drawing.Imaging.ImageFormat]::Png)
+            } finally { $graphics.Dispose(); $image.Dispose() }
+          } finally { if (!$wizard.HasExited) { taskkill /PID $wizard.Id /T /F | Out-Null } }
           $installDir = Join-Path $env:RUNNER_TEMP 'HingeGlass-Install-Test'
           $process = Start-Process $setup -ArgumentList @('/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART',"/DIR=$installDir") -PassThru
           if (!$process.WaitForExit(60000)) { $process.Kill(); throw 'Install timed out' }
@@ -64,6 +78,7 @@ jobs:
             HingeGlass-0.1.2-Windows-x64-preview.zip
             HingeGlass-0.1.2-Windows-x64-preview.zip.sha256
             windows-preview.png
+            installer-preview.png
             installer-output/HingeGlass-0.1.2-Windows-x64-Setup.exe
             installer-output/HingeGlass-0.1.2-Windows-x64-Setup.exe.sha256
           retention-days: 14
