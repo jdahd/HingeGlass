@@ -15,3 +15,9 @@
 /DerivedData/
 *.xcuserstate
 xcuserdata/
+
+# Windows build output
+windows/**/bin/
+windows/**/obj/
+/dist/
+/windows-preview.png

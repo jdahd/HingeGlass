@@ -1,0 +1,45 @@
+name: Windows preview
+on:
+  push:
+    paths: ['windows/**', '.github/workflows/windows-preview.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Build portable x64 app
+        shell: pwsh
+        run: dotnet publish windows/HingeGlass.Windows/HingeGlass.Windows.csproj -c Release -r win-x64 --self-contained true -o dist/HingeGlass-Windows
+      - name: Validate effect and launch UI
+        shell: pwsh
+        run: |
+          $exe = (Resolve-Path dist/HingeGlass-Windows/HingeGlass.exe).Path
+          foreach ($mode in @('--self-test','--ui-smoke')) {
+            $process = Start-Process $exe -ArgumentList $mode -PassThru
+            if (-not $process.WaitForExit(30000)) { $process.Kill(); throw "$mode timed out" }
+            if ($process.ExitCode -ne 0) { throw "$mode failed: $($process.ExitCode)" }
+          }
+          if (!(Test-Path windows-preview.png)) { throw 'Missing rendered preview' }
+      - name: Package
+        shell: pwsh
+        run: |
+          Copy-Item windows/README.md dist/HingeGlass-Windows/README.md
+          Copy-Item ThirdPartyNotices/Macbook_Duo_Effect.txt dist/HingeGlass-Windows/ThirdPartyNotices.txt
+          Compress-Archive -Path dist/HingeGlass-Windows -DestinationPath HingeGlass-0.1.0-Windows-x64-preview.zip
+          $hash = (Get-FileHash HingeGlass-0.1.0-Windows-x64-preview.zip -Algorithm SHA256).Hash.ToLower()
+          "$hash  HingeGlass-0.1.0-Windows-x64-preview.zip" | Set-Content HingeGlass-0.1.0-Windows-x64-preview.zip.sha256
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-preview
+          path: |
+            HingeGlass-0.1.0-Windows-x64-preview.zip
+            HingeGlass-0.1.0-Windows-x64-preview.zip.sha256
+            windows-preview.png
+          retention-days: 14
