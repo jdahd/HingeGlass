@@ -1,4 +1,6 @@
-# HingeGlass 1.1.1
+# HingeGlass for macOS · 1.1.1
+
+[Mac download](https://github.com/jdahd/HingeGlass/releases/tag/v1.1.1) · [Windows release notes](windows/RELEASE_NOTES.md) · [All downloads](README.md#download)
 
 Adds a continuous Transparency slider (0–100%) for the glass background. Text and controls remain opaque. The setting persists across launches and works with System, Light and Dark appearance. Enable Glass background to adjust it; macOS Reduce transparency takes precedence.
 

@@ -1,53 +1,69 @@
-# HingeGlass · Windows Preview 0.2.1
+# HingeGlass for Windows
 
-[Download Windows Preview](https://github.com/jdahd/HingeGlass/releases/tag/windows-v0.2.1-preview)
+**0.2.1 · Experimental preview** · [Download](https://github.com/jdahd/HingeGlass/releases/tag/windows-v0.2.1-preview) · [Project overview](../README.md)
 
-Experimental Windows x64 preview. This is a separate early Windows implementation, not feature parity with the Mac release. Windows 10 version 2004 or later / Windows 11. Windows-on-ARM and HarmonyOS are not validated targets.
+Live desktop perspective, blur and dimming on Windows 10 version 2004+ / Windows 11 x64. You can use manual desktop effects without an angle sensor. Automatic lid following requires readable angle data; it is not supported on every laptop.
 
-## Install (recommended)
+## Install
 
-Download `HingeGlass-0.2.1-Windows-x64-Setup.exe` from the release page and double-click it. Choose the Installation folder (type a full path or click Change…), then click Install HingeGlass in the animated English installer, then Open HingeGlass when it finishes. The installer respects Windows client-area animation settings. It installs for the current user, creates a Start menu entry, without a desktop shortcut. Administrator access is not required. Uninstall via Windows Settings → Apps. The installer uses the HingeGlass icon and brand name; it is unsigned, so Windows may display a reputation warning.
+| Package | How to use it |
+| --- | --- |
+| **HingeGlass-0.2.1-Windows-x64-Setup.exe** | Run Setup, enter an **Installation folder** or click **Change…**, then click **Install HingeGlass**. Use **Open HingeGlass** when finished. |
+| **HingeGlass-0.2.1-Windows-x64-preview.zip** | Extract the entire archive, then open **HingeGlass.exe**. Keep the accompanying files together. |
 
-The ZIP remains available for portable use.
+Setup installs for the current user into a writable folder and creates a Start menu entry. It does not create a desktop shortcut. Uninstall through **Windows Settings → Apps**. The .NET runtime is included. The installer is unsigned, so Windows may display a reputation warning.
 
-## Try it
+## First run: try the desktop effect
 
-Extract the entire ZIP to a folder and open `HingeGlass.exe`. Keep the accompanying files together. The package includes the .NET runtime; a separate .NET install is not required. This preview is unsigned and may trigger Windows reputation warnings.
+1. Select the display you want to use.
+2. Check **Enable live desktop**.
+3. Lower **Manual angle** below **Start angle**. For example, use a start angle of 114° and a manual angle of 80°.
+4. Adjust **Maximum blur** to taste.
+5. Press **Ctrl + Alt + Esc** or click **Pause and restore** to restore the desktop.
 
-- Move **Manual angle** to preview perspective, blur and dimming in the application window.
-- Change **Start angle** and **Maximum blur** to tune the response.
-- **Open image…** loads a local image.
-- **Take desktop snapshot** briefly hides the app and captures the primary display once. It stays in memory; this is not live desktop capture.
-- **Detect angle sensor** probes Windows' `HingeAngleSensor`. If available, move the lid slowly and inspect the angle/readings count. Do not fully close the lid during testing.
-- **Follow lid angle** is enabled after a valid reading. Angle conventions may differ; verify before using. It also drives the desktop while live mode is enabled. The last angle is held between sensor events; a stationary lid may not emit new readings. Use Esc to stop following.
-- **Pause and restore** or **Esc** stops following and opens the preview angle.
+The settings stay clear above the effect. Mouse clicks reach original desktop coordinates; perspective does not remap input. Opening past the start angle removes the overlay and stops capture, while leaving live mode armed.
 
-No account, network calls, audio capture, background service or automatic desktop overlay. No screen image is saved during normal use. Closing the window quits the app. This preview does not change lid-close sleep settings and does not persist preferences.
+**Open image…** and **Take desktop snapshot** supply images for the in-app preview. A snapshot is taken once; **Enable live desktop** is the separate continuous-capture mode.
 
-## Known limits
+## Check automatic lid following
 
-WPF uses a subdivided trapezoid and uniform blur; the Mac version's gradient blur is not reproduced exactly. Hardware rendering availability and performance depend on the machine. A successful build does not validate a laptop sensor. No Windows laptop model has been physically validated for this preview.
+Click **Detect angle sensor**, move the lid slowly without fully closing it, and expand **Compatibility monitor**.
 
-If sensor detection returns no compatible sensor, manual mode remains usable. That result does not prove the hardware lacks any sensor; its driver may not expose the standard Windows API.
+| Result | What it means |
+| --- | --- |
+| **No compatible API sensor** | The current Windows interface found no angle sensor. Use manual mode. This does not prove there is no manufacturer-specific hardware interface. |
+| Readings arrive but the angle stays fixed | Movement has not been verified. Slowly move the lid and inspect the history. |
+| Angle changes with lid movement | Check that its direction and values match the physical motion before enabling **Follow lid angle**. |
+| Large steps or irregular readings | Review the graph and diagnostics. A long interval while the lid is stationary does not by itself indicate a fault. |
+
+The app probes Windows' `HingeAngleSensor` API. It does not probe private manufacturer interfaces. A binary lid-open/lid-closed switch cannot provide continuous angles. No Windows laptop model is certified for automatic following by this project.
+
+**Compatibility monitor** shows recent angle history, reading count, event rate, longest interval, large steps, last-reading age, render callbacks and capture state. Render callbacks are not GPU presentation FPS. **Desktop: Off** means capture was off when the report was copied, for example after restoring or opening above the start angle.
+
+## Recovery and privacy
+
+**Ctrl + Alt + Esc** restores globally; **Esc** restores when the app has keyboard focus. Live mode is blocked if the global shortcut cannot register. Sleep, session lock, display changes and capture errors pause the effect. Closing the app stops capture and quits. Normal lid-close sleep is preserved.
+
+Frames are processed in memory during live mode. Normal use does not capture audio, save screen recordings or upload frames. There is no account, background service or startup task. Preview preferences are not persisted.
+
+## Limits and testing
+
+The Windows implementation uses CPU/GDI capture, limited to 1600 pixels wide and at most 30 capture cycles per second, with WPF perspective, uniform blur and dimming. It differs from the Mac rendering pipeline. Performance, protected content, graphics drivers and mixed-DPI/multi-monitor behavior require real-device testing. Windows ARM and HarmonyOS are not validated targets.
+
+CI checks the effect math, diagnostic history bounds, UI startup, live source changes, capture exclusion, pointer pass-through, keyboard restoration, expansion restoration, minimized activation, and installation/uninstallation into a custom path. Physical laptop angle response and visual smoothness are separate acceptance checks.
 
 ## Feedback
 
-Include computer model, Windows version, whether the app opens, sensor status, whether the angle changes, and whether manual preview is smooth. Do not include a desktop screenshot containing personal information. File feedback at https://github.com/jdahd/HingeGlass/issues.
+Use **Copy diagnostics** and include the computer model in a [GitHub issue](https://github.com/jdahd/HingeGlass/issues). State whether **manual desktop effects** work and whether **automatic lid following** works. The copied report excludes hardware serials and screen images.
 
 ## Development
 
-`dotnet publish HingeGlass.Windows/HingeGlass.Windows.csproj -c Release -r win-x64 --self-contained true`
+From the repository root:
 
-GitHub Actions builds on Windows, runs effect boundary checks and a UI startup/render smoke check, verifies the animated installer motion and complete installation/uninstallation, then uploads a portable ZIP and Setup and a generated sample-scene screenshot. `--self-test` exits with a test result; `--ui-smoke` explicitly writes `windows-preview.png` using the generated landscape only. Automated live capture/restoration checks run on the hosted Windows runner; real hardware sensor and visual performance testing are still needed.
+```powershell
+dotnet publish windows/HingeGlass.Windows/HingeGlass.Windows.csproj -c Release -r win-x64 --self-contained true
+```
 
-Effect formulas are adapted from the Mac renderer, derived from Ruixiang Huang's Macbook_Duo_Effect (MIT). See bundled ThirdPartyNotices.txt. The existing HingeGlass icon is reused.
+`--self-test` runs logic checks. `--ui-smoke` explicitly writes a generated-scene preview image. `--desktop-smoke` creates test windows, exercises desktop capture and recovery, and writes a test result. These switches are for controlled development environments.
 
-## Live desktop and compatibility monitor (0.2.1)
-
-Choose a display and enable **Enable live desktop**. Lower **Manual angle** below **Start angle**, or detect a sensor and enable **Follow lid angle**. The settings stay clear above the effect. Expand above the start angle to remove the effect and stop capture; live mode stays armed.
-
-**Ctrl+Alt+Esc** restores from any app. **Pause and restore** stops live mode and following. Sleep, lock, display changes and capture errors also pause it. If the global shortcut cannot register, live mode is blocked. Clicks reach original desktop coordinates, not the transformed visual positions.
-
-The **Compatibility monitor** shows recent angles, event frequency, longest interval, large steps, render callbacks and capture state. Move the lid slowly to verify a real changing signal. Stationary time can lower the reported event rate; this alone does not prove poor sensor performance. Copy diagnostics for feedback. This is a diagnostic aid, not a supported-model certification.
-
-This version adds a bounded CPU/GDI live capture path, up to 1600px wide and 30 captures per second, with WPF effects. It is not a promise of Mac performance or visual parity. Physical lid response, mixed DPI, graphics drivers and protected content still require real-device checks. Live mode is available separately from image/snapshot preview.
+The effect formula derives from Ruixiang Huang's Macbook_Duo_Effect (MIT). See [the third-party notice](../ThirdPartyNotices/Macbook_Duo_Effect.txt). The existing HingeGlass icon is reused.
