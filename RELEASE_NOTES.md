@@ -1,10 +1,9 @@
-# HingeGlass 1.1.0
+# HingeGlass 1.1.1
 
-- Added a Glass background toggle for the control window using native macOS visual effects.
-- Added System, Light and Dark appearance options, saved between launches.
-- Respects macOS Reduce transparency with a solid background fallback.
-- Kept the lid effect, sensor sampling and live desktop processing unchanged.
+Adds a continuous Transparency slider (0–100%) for the glass background. Text and controls remain opaque. The setting persists across launches and works with System, Light and Dark appearance. Enable Glass background to adjust it; macOS Reduce transparency takes precedence.
 
-Download HingeGlass-1.1.0-macOS-arm64.zip. Requires macOS 14 or later and an Apple silicon MacBook with a compatible lid-angle sensor. The build is ad hoc signed and not Apple-notarized. Desktop mode needs Screen & System Audio Recording permission; macOS may request permission again after updating.
+0% keeps the full frosted material; 100% makes the background fully clear. The lid effect is unchanged.
 
-The effect adapts Macbook_Duo_Effect by Ruixiang Huang under MIT. Full third-party notices are included.
+Requires macOS 14 or later and an Apple silicon MacBook with a compatible lid-angle sensor. This build is ad hoc signed and not Apple-notarized. Desktop mode needs Screen & System Audio Recording permission, which macOS may request again after updating.
+
+The effect adapts Macbook_Duo_Effect by Ruixiang Huang under MIT; full third-party notices are bundled.

@@ -12,7 +12,7 @@ A quiet lid effect for your Mac. As you close the display, your live desktop gai
 
 [Download HingeGlass for macOS](https://github.com/jdahd/HingeGlass/releases/latest) · [中文使用说明](使用说明.md)
 
-Choose `HingeGlass-1.1.0-macOS-arm64.zip`, unzip it, and move `HingeGlass.app` to Applications. This release is for Apple silicon MacBooks running macOS 14 or later with a compatible built-in lid-angle sensor. There is no Windows or Intel build.
+Choose `HingeGlass-1.1.1-macOS-arm64.zip`, unzip it, and move `HingeGlass.app` to Applications. This release is for Apple silicon MacBooks running macOS 14 or later with a compatible built-in lid-angle sensor. There is no Windows or Intel build.
 
 The app is ad hoc signed and not Apple-notarized. If macOS blocks it, review the warning in System Settings → Privacy & Security and use Open Anyway if available.
 
@@ -27,6 +27,7 @@ Screen frames are processed in memory while the effect is active. No audio is ca
 ## Window appearance
 
 - **Glass background** enables a native frosted glass background for the control window. Turn it off for a solid background.
+- **Transparency** adjusts the glass background from full material (0%) to fully clear (100%). Text and controls stay opaque. The value is saved; the slider is available when Glass background is enabled and macOS Reduce transparency is off.
 - **System / Light / Dark** follows macOS appearance or chooses a fixed light or dark window.
 - Both choices are saved. macOS **Reduce transparency** takes precedence and uses a solid background.
 

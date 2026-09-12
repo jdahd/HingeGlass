@@ -24,6 +24,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     var glassBackground: NSVisualEffectView!
     var glassToggle: NSButton!
     var appearancePicker: NSPopUpButton!
+    var transparencySlider: NSSlider!
+    var transparencyLabel: NSTextField!
     var lastAngle: Double?
     var enabled = false
     var blockedUntilOpen = false
@@ -156,6 +158,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         appearancePicker.setAccessibilityLabel("Window appearance")
         let appearanceSpacer=NSView(); appearanceSpacer.setContentHuggingPriority(.defaultLow,for:.horizontal)
         add(row([glassToggle,appearanceSpacer,appearancePicker]))
+        let savedTransparency=UserDefaults.standard.double(forKey:"glassTransparency")
+        transparencySlider=NSSlider(value:min(100,max(0,savedTransparency)),minValue:0,maxValue:100,target:self,action:#selector(transparencyChanged))
+        transparencySlider.isContinuous=true
+        transparencySlider.setAccessibilityLabel("Glass background transparency")
+        transparencySlider.setContentHuggingPriority(.defaultLow,for:.horizontal)
+        transparencyLabel=label("0%",size:12)
+        transparencyLabel.font = .monospacedDigitSystemFont(ofSize:12,weight:.regular)
+        transparencyLabel.widthAnchor.constraint(equalToConstant:38).isActive=true
+        add(row([label("Transparency",size:12),transparencySlider,transparencyLabel]))
         applyWindowAppearance()
         notificationTokens.append(NSWorkspace.shared.notificationCenter.addObserver(forName:NSWorkspace.accessibilityDisplayOptionsDidChangeNotification,object:nil,queue:.main) { [weak self] _ in
             self?.applyWindowAppearance()
@@ -195,7 +206,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         divider()
         infoLabel=NSTextField(wrappingLabelWithString:"Choose a scene, then enable the lid effect.")
         infoLabel.font = .systemFont(ofSize:11); infoLabel.textColor = .secondaryLabelColor
-        add(infoLabel); infoLabel.heightAnchor.constraint(equalToConstant:60).isActive=true
+        add(infoLabel); infoLabel.heightAnchor.constraint(equalToConstant:36).isActive=true
         let footerSpacer=NSView(); footerSpacer.setContentHuggingPriority(.defaultLow,for:.horizontal)
         add(row([button("Permissions…",#selector(openScreenSettings)),footerSpacer,button("Restore",#selector(emergencyStop))]))
         let hint=label("⌃⌥⌘ Esc to restore  ·  Built-in display only",size:10); hint.textColor = .tertiaryLabelColor
@@ -216,10 +227,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                       (style != "Light" || window.appearance?.name == .aqua),
                       (style != "Dark" || window.appearance?.name == .darkAqua)
                 else { print("FAIL: appearance \(style), glass \(glass)"); exit(1) }
+                for value in [0.0,50.0,100.0] {
+                    transparencySlider.doubleValue=value
+                    applyWindowAppearance()
+                    guard abs(glassBackground.alphaValue-CGFloat(1-value/100))<0.001,
+                          window.alphaValue == 1,
+                          transparencySlider.isEnabled == expectedGlass
+                    else { print("FAIL: background transparency"); exit(1) }
+                }
                 print("PASS: appearance \(style), glass \(glass)")
             }
         }
         NSApp.terminate(nil)
+    }
+    @objc func transparencyChanged() {
+        UserDefaults.standard.set(transparencySlider.doubleValue,forKey:"glassTransparency")
+        applyWindowAppearance()
     }
     @objc func appearanceChanged() {
         UserDefaults.standard.set(glassToggle.state == .on,forKey:"glassBackgroundEnabled")
@@ -234,6 +257,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         let glass=glassToggle.state == .on && !NSWorkspace.shared.accessibilityDisplayShouldReduceTransparency
         glassBackground.isHidden = !glass
+        glassBackground.alphaValue=CGFloat(1-transparencySlider.doubleValue/100)
+        transparencySlider.isEnabled=glass
+        transparencyLabel.stringValue="\(Int(transparencySlider.doubleValue.rounded()))%"
+        transparencyLabel.textColor=glass ? .secondaryLabelColor : .disabledControlTextColor
         window.isOpaque = !glass
         window.backgroundColor = glass ? .clear : .windowBackgroundColor
         glassToggle.toolTip = NSWorkspace.shared.accessibilityDisplayShouldReduceTransparency
