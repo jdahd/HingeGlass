@@ -14,7 +14,7 @@ public sealed partial class MainWindow
     readonly TextBlock diagnostics=new(){TextWrapping=TextWrapping.Wrap,FontSize=13,Foreground=Brushes.LightGray};
     readonly System.Windows.Shapes.Polyline graph=new(){Stroke=Brushes.LightSkyBlue,StrokeThickness=2};
     readonly ComboBox displays=new(){Margin=new Thickness(0,10,0,0)};
-    readonly CheckBox live=new(){Content="Enable live desktop",Margin=new Thickness(0,14,0,8)};
+    readonly CheckBox live=new(){Content="Enable live desktop",Foreground=Brushes.White,Margin=new Thickness(0,14,0,8)};
     DesktopEffect? desktop;
     bool starting,hotkey;
     int generation,renderCount;
@@ -30,7 +30,7 @@ public sealed partial class MainWindow
         live.Unchecked+=(_,_)=>StopDesktop();displays.SelectionChanged+=(_,_)=>RestoreDesktop("Display changed; enable again");
         var panel=new StackPanel();panel.Children.Add(new Border{Height=80,Background=new SolidColorBrush(Color.FromRgb(10,17,26)),Child=graph,Margin=new Thickness(0,8,0,8)});panel.Children.Add(diagnostics);
         AddButton(panel,"Copy diagnostics",()=>{try{Clipboard.SetText(monitor.Report(clock.Elapsed.TotalSeconds,renderFps,captureStatus));}catch{status.Text="Clipboard busy. Try again.";}});
-        controls.Children.Add(new Expander{Header="Compatibility monitor",Content=panel,IsExpanded=true,Margin=new Thickness(0,12,0,0)});
+        controls.Children.Add(new Expander{Header="Compatibility monitor",Foreground=Brushes.White,Content=panel,IsExpanded=false,Margin=new Thickness(0,12,0,0)});
     }
     void InitializeDesktopEvents()
     {
