@@ -32,9 +32,9 @@ jobs:
         run: |
           Copy-Item windows/README.md dist/HingeGlass-Windows/README.md
           Copy-Item ThirdPartyNotices/Macbook_Duo_Effect.txt dist/HingeGlass-Windows/ThirdPartyNotices.txt
-          Compress-Archive -Path dist/HingeGlass-Windows -DestinationPath HingeGlass-0.1.2-Windows-x64-preview.zip
-          $hash = (Get-FileHash HingeGlass-0.1.2-Windows-x64-preview.zip -Algorithm SHA256).Hash.ToLower()
-          "$hash  HingeGlass-0.1.2-Windows-x64-preview.zip" | Set-Content HingeGlass-0.1.2-Windows-x64-preview.zip.sha256
+          Compress-Archive -Path dist/HingeGlass-Windows -DestinationPath HingeGlass-0.1.3-Windows-x64-preview.zip
+          $hash = (Get-FileHash HingeGlass-0.1.3-Windows-x64-preview.zip -Algorithm SHA256).Hash.ToLower()
+          "$hash  HingeGlass-0.1.3-Windows-x64-preview.zip" | Set-Content HingeGlass-0.1.3-Windows-x64-preview.zip.sha256
       - name: Build branded installer and test installation
         shell: pwsh
         run: |
@@ -42,7 +42,7 @@ jobs:
           if (!(Test-Path $compiler)) { throw 'Inno Setup compiler missing' }
           & $compiler windows/installer/HingeGlass.iss
           if ($LASTEXITCODE) { throw 'Installer compilation failed' }
-          $setup = (Resolve-Path installer-output/HingeGlass-0.1.2-Windows-x64-Setup.exe).Path
+          $setup = (Resolve-Path installer-output/HingeGlass-0.1.3-Windows-x64-Setup.exe).Path
           # Capture the actual welcome wizard on the isolated CI desktop.
           Add-Type -AssemblyName System.Windows.Forms
           Add-Type -AssemblyName System.Drawing
@@ -70,15 +70,20 @@ jobs:
           if (!$uninstall.WaitForExit(60000)) { $uninstall.Kill(); throw 'Uninstall timed out' }
           if ($uninstall.ExitCode -ne 0 -or (Test-Path "$installDir/HingeGlass.exe")) { throw 'Uninstall failed' }
           $hash = (Get-FileHash $setup -Algorithm SHA256).Hash.ToLower()
-          "$hash  HingeGlass-0.1.2-Windows-x64-Setup.exe" | Set-Content "$setup.sha256"
+          "$hash  HingeGlass-0.1.3-Windows-x64-Setup.exe" | Set-Content "$setup.sha256"
       - uses: actions/upload-artifact@v4
         with:
           name: windows-preview
           path: |
-            HingeGlass-0.1.2-Windows-x64-preview.zip
-            HingeGlass-0.1.2-Windows-x64-preview.zip.sha256
+            HingeGlass-0.1.3-Windows-x64-preview.zip
+            HingeGlass-0.1.3-Windows-x64-preview.zip.sha256
             windows-preview.png
             installer-preview.png
-            installer-output/HingeGlass-0.1.2-Windows-x64-Setup.exe
-            installer-output/HingeGlass-0.1.2-Windows-x64-Setup.exe.sha256
+            installer-output/HingeGlass-0.1.3-Windows-x64-Setup.exe
+            installer-output/HingeGlass-0.1.3-Windows-x64-Setup.exe.sha256
           retention-days: 14
+      - uses: actions/upload-artifact@v4
+        with:
+          name: installer-design-review
+          path: installer-preview.png
+          retention-days: 7
