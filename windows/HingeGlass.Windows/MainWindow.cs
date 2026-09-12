@@ -110,18 +110,18 @@ public sealed partial class MainWindow : Window
     {
         if(detecting)return;detecting=true;follow.IsChecked=false;follow.IsEnabled=false;
         if(sensor!=null){sensor.ReadingChanged-=Reading;sensor=null;}
-        status.Text="Checking angle sensor…";
+        monitor.Reset();status.Text="Checking angle sensor…";
         try {
-            var detected=await HingeAngleSensor.GetDefaultAsync();
+            var detected=await HingeAngleSensor.GetDefaultAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(10));
             if(closed)return;
             sensor=detected;
             if(sensor==null){monitor.SensorStatus="No compatible API sensor";status.Text="No compatible angle sensor found. Manual preview is available.";return;}
-            monitor.Reset();samples=0;sensor.ReadingChanged+=Reading;
-            var reading=await sensor.GetCurrentReadingAsync();
+            samples=0;sensor.ReadingChanged+=Reading;
+            var reading=await sensor.GetCurrentReadingAsync().AsTask().WaitAsync(TimeSpan.FromSeconds(10));
             if(closed)return;
             if(reading!=null)UpdateReading(reading.AngleInDegrees);
             status.Text="Sensor found. Slowly move the lid to check readings. Do not fully close it.";
-        }catch(Exception ex){status.Text=$"Sensor unavailable (0x{ex.HResult:X8}). Manual preview is available.";}
+        }catch(Exception ex){monitor.SensorStatus=$"Unavailable (0x{ex.HResult:X8})";status.Text=$"Sensor unavailable (0x{ex.HResult:X8}). Manual preview is available.";}
         finally{detecting=false;}
     }
     void Reading(HingeAngleSensor sender,HingeAngleSensorReadingChangedEventArgs args)
