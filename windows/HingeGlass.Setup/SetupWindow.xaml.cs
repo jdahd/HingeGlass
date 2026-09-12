@@ -14,7 +14,7 @@ namespace HingeGlass.Setup;
 public partial class SetupWindow : Window
 {
     readonly string[] args;
-    readonly string installDir;
+    string installDir;
     bool busy;
     readonly bool motion=SystemParameters.ClientAreaAnimation;
     public SetupWindow(string[] arguments)
@@ -24,6 +24,7 @@ public partial class SetupWindow : Window
         installDir=Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"Programs","HingeGlass");
         int index=Array.IndexOf(args,"--test-dir");
         if(index>=0 && index+1<args.Length && Array.IndexOf(args,"--installer-smoke")>=0) installDir=Path.GetFullPath(args[index+1]);
+        InstallPath.Text=installDir;
         Loaded+=async(_,_)=>{
             AnimateEntrance();
             if(Array.IndexOf(args,"--installer-smoke")>=0){
@@ -66,7 +67,17 @@ public partial class SetupWindow : Window
     }
     async Task<bool> Install()
     {
-        if(busy)return false;busy=true;
+        if(busy)return false;
+        try {
+            var requested=InstallPath.Text.Trim();
+            if(!Path.IsPathFullyQualified(requested))throw new IOException("Choose a full folder path, such as D:\\Apps\\HingeGlass.");
+            installDir=Path.GetFullPath(requested);
+            if(string.Equals(Path.TrimEndingDirectorySeparator(installDir),Path.TrimEndingDirectorySeparator(Path.GetPathRoot(installDir)!),StringComparison.OrdinalIgnoreCase))throw new IOException("Choose an app folder, not the drive root.");
+            Directory.CreateDirectory(installDir);
+            using(var probe=new FileStream(Path.Combine(installDir,".hingeglass-write-test-"+Guid.NewGuid().ToString("N")),FileMode.CreateNew,FileAccess.Write,FileShare.None,1,FileOptions.DeleteOnClose)){}
+            PathError.Text="";
+        }catch(Exception ex){PathError.Text="Choose a writable installation folder. "+ex.Message;await Stage(Welcome);return false;}
+        busy=true;
         string temp=Path.Combine(Path.GetTempPath(),"HingeGlass-Setup-"+Guid.NewGuid().ToString("N"));
         try{
             await Stage(Installing);
@@ -89,6 +100,12 @@ public partial class SetupWindow : Window
             busy=false;ErrorText.Text="Installation could not finish. Close any running HingeGlass window and try again.\n\n"+ex.Message;
             await Stage(Failure);return false;
         }finally{try{if(Directory.Exists(temp))Directory.Delete(temp,true);}catch(IOException){}catch(UnauthorizedAccessException){}}
+    }
+    void BrowseClick(object sender,RoutedEventArgs e)
+    {
+        var picker=new Microsoft.Win32.OpenFolderDialog{Title="Choose where to install HingeGlass",Multiselect=false};
+        if(Directory.Exists(InstallPath.Text))picker.InitialDirectory=InstallPath.Text;
+        if(picker.ShowDialog(this)==true){var folder=picker.FolderName;InstallPath.Text=string.Equals(Path.GetFileName(Path.TrimEndingDirectorySeparator(folder)),"HingeGlass",StringComparison.OrdinalIgnoreCase)?folder:Path.Combine(folder,"HingeGlass");PathError.Text="";}
     }
     async void InstallClick(object sender,RoutedEventArgs e)=>await Install();
     void OpenClick(object sender,RoutedEventArgs e)

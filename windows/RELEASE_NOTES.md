@@ -1,4 +1,6 @@
-Windows 0.2.0 experimental preview adds live desktop effects and a compatibility monitor.
+Windows 0.2.1 adds a selectable installation folder to the animated Setup. Edit the full path or click Change… to choose a parent folder. The default remains the current user’s LocalAppData/Programs/HingeGlass. The destination must be writable without elevation. Installation, launch and uninstall use the selected path.
+
+Windows 0.2.1 experimental preview adds live desktop effects and a compatibility monitor.
 
 - Select a display, lower Manual angle below Start angle, and enable live desktop. Follow lid angle is available when valid sensor readings arrive.
 - The desktop is continuously captured in memory using a bounded GDI capture path (maximum 1600px wide, at most 30 captures/s). WPF applies perspective, uniform blur and dimming. This is not the Mac GPU capture pipeline and performance varies.

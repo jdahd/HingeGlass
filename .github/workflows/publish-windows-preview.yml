@@ -26,11 +26,11 @@ jobs:
           if ($run.conclusion -ne 'success' -or $run.path -ne '.github/workflows/windows-preview.yml' -or $run.head_branch -ne 'main' -or $run.event -ne 'push') { throw 'Expected a successful main-branch preview build' }
           gh run download $env:BUILD_RUN_ID --name windows-preview --dir verified
           if ($LASTEXITCODE) { throw 'Artifact download failed' }
-          $zip = 'verified/HingeGlass-0.2.0-Windows-x64-preview.zip'
+          $zip = 'verified/HingeGlass-0.2.1-Windows-x64-preview.zip'
           $expected = ((Get-Content "$zip.sha256").Trim() -split '\s+')[0]
           if ((Get-FileHash $zip -Algorithm SHA256).Hash.ToLower() -ne $expected) { throw 'Checksum mismatch' }
-          $setup = 'verified/installer-output/HingeGlass-0.2.0-Windows-x64-Setup.exe'
+          $setup = 'verified/installer-output/HingeGlass-0.2.1-Windows-x64-Setup.exe'
           $expectedSetup = ((Get-Content "$setup.sha256").Trim() -split '\s+')[0]
           if ((Get-FileHash $setup -Algorithm SHA256).Hash.ToLower() -ne $expectedSetup) { throw 'Installer checksum mismatch' }
-          gh release create windows-v0.2.0-preview $zip "$zip.sha256" $setup "$setup.sha256" verified/windows-preview.png --target $run.head_sha --title 'HingeGlass Windows 0.2.0 Preview' --notes-file windows/RELEASE_NOTES.md --prerelease --latest=false
+          gh release create windows-v0.2.1-preview $zip "$zip.sha256" $setup "$setup.sha256" verified/windows-preview.png --target $run.head_sha --title 'HingeGlass Windows 0.2.1 Preview' --notes-file windows/RELEASE_NOTES.md --prerelease --latest=false
           if ($LASTEXITCODE) { throw 'Release creation failed' }

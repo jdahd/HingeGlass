@@ -1,12 +1,12 @@
-# HingeGlass · Windows Preview 0.2.0
+# HingeGlass · Windows Preview 0.2.1
 
-[Download Windows Preview](https://github.com/jdahd/HingeGlass/releases/tag/windows-v0.2.0-preview)
+[Download Windows Preview](https://github.com/jdahd/HingeGlass/releases/tag/windows-v0.2.1-preview)
 
 Experimental Windows x64 preview. This is a separate early Windows implementation, not feature parity with the Mac release. Windows 10 version 2004 or later / Windows 11. Windows-on-ARM and HarmonyOS are not validated targets.
 
 ## Install (recommended)
 
-Download `HingeGlass-0.2.0-Windows-x64-Setup.exe` from the release page and double-click it. Click Install HingeGlass in the animated English installer, then Open HingeGlass when it finishes. The installer respects Windows client-area animation settings. It installs for the current user, creates a Start menu entry, without a desktop shortcut. Administrator access is not required. Uninstall via Windows Settings → Apps. The installer uses the HingeGlass icon and brand name; it is unsigned, so Windows may display a reputation warning.
+Download `HingeGlass-0.2.1-Windows-x64-Setup.exe` from the release page and double-click it. Choose the Installation folder (type a full path or click Change…), then click Install HingeGlass in the animated English installer, then Open HingeGlass when it finishes. The installer respects Windows client-area animation settings. It installs for the current user, creates a Start menu entry, without a desktop shortcut. Administrator access is not required. Uninstall via Windows Settings → Apps. The installer uses the HingeGlass icon and brand name; it is unsigned, so Windows may display a reputation warning.
 
 The ZIP remains available for portable use.
 
@@ -42,7 +42,7 @@ GitHub Actions builds on Windows, runs effect boundary checks and a UI startup/r
 
 Effect formulas are adapted from the Mac renderer, derived from Ruixiang Huang's Macbook_Duo_Effect (MIT). See bundled ThirdPartyNotices.txt. The existing HingeGlass icon is reused.
 
-## Live desktop and compatibility monitor (0.2.0)
+## Live desktop and compatibility monitor (0.2.1)
 
 Choose a display and enable **Enable live desktop**. Lower **Manual angle** below **Start angle**, or detect a sensor and enable **Follow lid angle**. The settings stay clear above the effect. Expand above the start angle to remove the effect and stop capture; live mode stays armed.
 
