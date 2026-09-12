@@ -30,14 +30,15 @@ internal sealed class DesktopEffect : Window
     {
         bounds=screen.Bounds;WindowStyle=WindowStyle.None;ResizeMode=ResizeMode.NoResize;
         ShowInTaskbar=false;ShowActivated=false;Topmost=true;Background=Brushes.Black;
+        // WPF owns layered-window setup. A near-opaque window also keeps underlying surfaces composing.
+        Opacity=254.0/255.0;
         var viewport=new Viewport3D{Camera=new OrthographicCamera(new Point3D(0,0,4),new Vector3D(0,0,-1),new Vector3D(0,1,0),2),Effect=blur};
         viewport.Children.Add(new ModelVisual3D{Content=new GeometryModel3D{Geometry=mesh,Material=new EmissiveMaterial(image)}});
         var grid=new Grid();grid.Children.Add(viewport);grid.Children.Add(dim);Content=grid;
         SourceInitialized+=(_,_)=>{
             var h=new WindowInteropHelper(this).Handle;
             if(!SetWindowDisplayAffinity(h,0x11))throw new InvalidOperationException("Capture exclusion is unavailable.");
-            SetWindowLongPtr(h,-20,new IntPtr(GetWindowLongPtr(h,-20).ToInt64()|0x20|0x08000000|0x80|0x80000));
-            if(!SetLayeredWindowAttributes(h,0,255,2))throw new InvalidOperationException("Click-through layer unavailable");
+            SetWindowLongPtr(h,-20,new IntPtr(GetWindowLongPtr(h,-20).ToInt64()|0x20|0x08000000|0x80));
             SetWindowPos(h,new IntPtr(-1),bounds.X,bounds.Y,bounds.Width,bounds.Height,0x10);
         };
         Loaded+=(_,_)=>SetWindowPos(new WindowInteropHelper(this).Handle,new IntPtr(-1),bounds.X,bounds.Y,bounds.Width,bounds.Height,0x10);
@@ -74,7 +75,6 @@ internal sealed class DesktopEffect : Window
         using var small=new System.Drawing.Bitmap(full,w,h);
         var handle=small.GetHbitmap();try{var frame=Imaging.CreateBitmapSourceFromHBitmap(handle,IntPtr.Zero,Int32Rect.Empty,BitmapSizeOptions.FromEmptyOptions());frame.Freeze();return frame;}finally{DeleteObject(handle);}
     }
-    [DllImport("user32.dll")]static extern bool SetLayeredWindowAttributes(IntPtr h,uint color,byte alpha,uint flags);
     [DllImport("gdi32.dll")]static extern bool DeleteObject(IntPtr h);
     [DllImport("user32.dll",SetLastError=true)]internal static extern bool SetWindowDisplayAffinity(IntPtr h,uint value);
     [DllImport("user32.dll",EntryPoint="GetWindowLongPtrW")]static extern IntPtr GetWindowLongPtr(IntPtr h,int index);
