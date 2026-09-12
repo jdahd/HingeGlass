@@ -21,3 +21,5 @@ windows/**/bin/
 windows/**/obj/
 /dist/
 /windows-preview.png
+
+/installer-output/

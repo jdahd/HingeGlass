@@ -36,7 +36,7 @@ public sealed class MainWindow : Window
     double lastAspect;
     public MainWindow()
     {
-        Title="HingeGlass · Windows Preview 0.1.1";
+        Title="HingeGlass · Windows Preview 0.1.2";
         Width=1020;Height=760;MinWidth=720;MinHeight=580;
         Background=new SolidColorBrush(Color.FromRgb(19,25,35));Foreground=Brushes.White;
         FontFamily=new FontFamily("Segoe UI");FontSize=14;

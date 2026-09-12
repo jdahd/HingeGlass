@@ -1,8 +1,14 @@
-# HingeGlass · Windows Preview 0.1.1
+# HingeGlass · Windows Preview 0.1.2
 
-[Download Windows Preview](https://github.com/jdahd/HingeGlass/releases/tag/windows-v0.1.1-preview)
+[Download Windows Preview](https://github.com/jdahd/HingeGlass/releases/tag/windows-v0.1.2-preview)
 
 Experimental Windows x64 preview. This is a separate early Windows implementation, not feature parity with the Mac release. Windows 10 version 2004 or later / Windows 11. Windows-on-ARM and HarmonyOS are not validated targets.
+
+## Install (recommended)
+
+Download `HingeGlass-0.1.2-Windows-x64-Setup.exe` from the release page and double-click it. Follow the English setup wizard. It installs for the current user, creates a Start menu entry, and optionally adds a desktop shortcut. Administrator access is not required. Uninstall via Windows Settings → Apps. The installer uses the HingeGlass icon and brand name; it is unsigned, so Windows may display a reputation warning.
+
+The ZIP remains available for portable use.
 
 ## Try it
 

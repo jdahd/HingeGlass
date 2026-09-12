@@ -20,7 +20,7 @@ A quiet lid effect for your Mac. As you close the display, your live desktop gai
 
 [Download HingeGlass for macOS](https://github.com/jdahd/HingeGlass/releases/latest) · [中文使用说明](使用说明.md)
 
-Choose `HingeGlass-1.1.1-macOS-arm64.zip`, unzip it, and move `HingeGlass.app` to Applications. This release is for Apple silicon MacBooks running macOS 14 or later with a compatible built-in lid-angle sensor. For the experimental Windows x64 preview, see [Windows preview download](https://github.com/jdahd/HingeGlass/releases/tag/windows-v0.1.1-preview) ([instructions](windows/README.md)). There is no Intel Mac build.
+Choose `HingeGlass-1.1.1-macOS-arm64.zip`, unzip it, and move `HingeGlass.app` to Applications. This release is for Apple silicon MacBooks running macOS 14 or later with a compatible built-in lid-angle sensor. For the experimental Windows x64 preview, see [Windows preview download](https://github.com/jdahd/HingeGlass/releases/tag/windows-v0.1.2-preview) ([instructions](windows/README.md)). There is no Intel Mac build.
 
 The app is ad hoc signed and not Apple-notarized. If macOS blocks it, review the warning in System Settings → Privacy & Security and use Open Anyway if available.
 
