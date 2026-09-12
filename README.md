@@ -1,7 +1,5 @@
 <h1 align="center">
   <picture>
-    <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/images/title-dark-static.svg">
-    <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/title-light-static.svg">
     <source media="(prefers-color-scheme: dark)" srcset="docs/images/title-dark.svg">
     <img src="docs/images/title-light.svg" alt="HingeGlass — A little motion. A softer view." width="100%">
   </picture>
@@ -16,8 +14,6 @@ A quiet lid effect for your Mac. As you close the display, your live desktop gai
 <p align="center"><sub>Dark glass appearance with adjustable background transparency.</sub></p>
 
 <h2 id="download"><picture>
-  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/images/section-download-dark-static.svg">
-  <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/section-download-light-static.svg">
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/section-download-dark.svg">
   <img src="docs/images/section-download-light.svg" alt="Download" width="360">
 </picture></h2>
@@ -29,8 +25,6 @@ Choose `HingeGlass-1.1.1-macOS-arm64.zip`, unzip it, and move `HingeGlass.app` t
 The app is ad hoc signed and not Apple-notarized. If macOS blocks it, review the warning in System Settings → Privacy & Security and use Open Anyway if available.
 
 <h2 id="run"><picture>
-  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/images/section-run-dark-static.svg">
-  <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/section-run-light-static.svg">
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/section-run-dark.svg">
   <img src="docs/images/section-run-light.svg" alt="Run" width="360">
 </picture></h2>
@@ -42,8 +36,6 @@ Use **Start angle** and **Maximum blur** to tune the effect. Click **Enable** to
 Screen frames are processed in memory while the effect is active. No audio is captured, and screen footage is neither saved nor uploaded.
 
 <h2 id="window-appearance"><picture>
-  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/images/section-window-appearance-dark-static.svg">
-  <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/section-window-appearance-light-static.svg">
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/section-window-appearance-dark.svg">
   <img src="docs/images/section-window-appearance-light.svg" alt="Window appearance" width="360">
 </picture></h2>
@@ -56,8 +48,6 @@ Screen frames are processed in memory while the effect is active. No audio is ca
 These options change the control window only; the lid effect and desktop capture are unchanged.
 
 <h2 id="release"><picture>
-  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/images/section-release-dark-static.svg">
-  <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/section-release-light-static.svg">
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/section-release-dark.svg">
   <img src="docs/images/section-release-light.svg" alt="Release" width="360">
 </picture></h2>
@@ -65,8 +55,6 @@ These options change the control window only; the lid effect and desktop capture
 1.0 packages the lid effect with an application icon, About panel, bundled credits and documentation. This local build is ad hoc signed and is not Apple notarized. Rebuilding can require refreshing the Screen Recording permission.
 
 <h2 id="development"><picture>
-  <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/images/section-development-dark-static.svg">
-  <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/section-development-light-static.svg">
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/section-development-dark.svg">
   <img src="docs/images/section-development-light.svg" alt="Development" width="360">
 </picture></h2>
