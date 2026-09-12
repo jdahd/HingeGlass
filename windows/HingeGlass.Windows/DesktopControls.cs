@@ -76,8 +76,8 @@ public sealed partial class MainWindow
         fixture.Show();Activate();
         try {
         angle.Value=75;live.IsChecked=true;
-        await Task.Delay(2500);
-        if(desktop==null||desktop.Frames<3)throw new Exception("No live frames");
+        for(int i=0;i<60 && (desktop==null||desktop.Frames<3);i++)await Task.Delay(100);
+        if(desktop==null||desktop.Frames<3)throw new Exception($"No live frames: {status.Text}; {captureStatus}; starting={starting}; shown={shown}; live={live.IsChecked}");
         if(!DesktopEffect.SetWindowDisplayAffinity(handle,0x11))throw new Exception("No exclusion");
         var first=DesktopEffect.Capture(screen.Bounds);
         byte[] pixel=new byte[4];
@@ -86,10 +86,14 @@ public sealed partial class MainWindow
         SetCursorPos(screen.Bounds.Right-50,screen.Bounds.Top+screen.Bounds.Height/2);
         mouse_event(2,0,0,0,UIntPtr.Zero);mouse_event(4,0,0,0,UIntPtr.Zero);await Task.Delay(200);
         if(clicks!=1)throw new Exception("Desktop mouse input blocked");
-        fixture.Background=Brushes.Red;await Task.Delay(300);
-        var second=DesktopEffect.Capture(screen.Bounds);
-        second.CopyPixels(new Int32Rect(second.PixelWidth-30,second.PixelHeight/2,1,1),pixel,4,0);
-        if(pixel[2]<200||pixel[0]>50||pixel[1]>50)throw new Exception("Live source did not change");
+        fixture.Background=Brushes.Red;
+        for(int i=0;i<30;i++){
+            await Task.Delay(100);
+            var second=DesktopEffect.Capture(screen.Bounds);
+            second.CopyPixels(new Int32Rect(second.PixelWidth-30,second.PixelHeight/2,1,1),pixel,4,0);
+            if(pixel[2]>200&&pixel[0]<50&&pixel[1]<50)break;
+        }
+        if(pixel[2]<200||pixel[0]>50||pixel[1]>50)throw new Exception($"Live source did not change: {pixel[0]},{pixel[1]},{pixel[2]}");
         // Deliver the registered shortcut through Windows keyboard input, not a direct restore call.
         keybd_event(0x11,0,0,UIntPtr.Zero);keybd_event(0x12,0,0,UIntPtr.Zero);keybd_event(0x1B,0,0,UIntPtr.Zero);
         keybd_event(0x1B,0,2,UIntPtr.Zero);keybd_event(0x12,0,2,UIntPtr.Zero);keybd_event(0x11,0,2,UIntPtr.Zero);
