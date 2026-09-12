@@ -27,7 +27,7 @@ Use the app packages above to install. GitHub's **Source code (zip)** contains t
 
 <p align="center">
   <img src="docs/images/hingeglass-glass-desktop.jpg" alt="macOS HingeGlass settings with dark glass appearance and adjustable transparency" width="100%">
-  <br><sub>macOS — floating settings with adjustable glass transparency.</sub>
+  <br><sub>macOS — floating settings with adjustable glass transparency. <a href="wallpapers/README.md">Wallpaper &amp; source</a>.</sub>
 </p>
 
 <details>
