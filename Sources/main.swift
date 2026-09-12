@@ -21,6 +21,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     var blurValueLabel: NSTextField!
     var enableButton: NSButton!
     var sourceControl: NSSegmentedControl!
+    var glassBackground: NSVisualEffectView!
+    var glassToggle: NSButton!
+    var appearancePicker: NSPopUpButton!
     var lastAngle: Double?
     var enabled = false
     var blockedUntilOpen = false
@@ -64,6 +67,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         if let iconURL=Bundle.main.url(forResource:"AppIcon",withExtension:"icns"),let icon=NSImage(contentsOf:iconURL) { NSApp.applicationIconImage=icon }
         makeMenu(); makeWindow(device:device); registerEscape()
+        if CommandLine.arguments.contains("--appearance-check") { runAppearanceCheck(); return }
         sensor.onAngle = { [weak self] angle in self?.receive(angle) }
         sensor.start()
         let health=Timer(timeInterval:0.25,repeats:true) { [weak self] _ in
@@ -110,13 +114,25 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func button(_ text:String, _ action:Selector) -> NSButton { let b=NSButton(title:text,target:self,action:action); b.bezelStyle = .rounded; return b }
     func row(_ views:[NSView]) -> NSStackView { let s=NSStackView(views:views); s.orientation = .horizontal; s.spacing=12; s.alignment = .centerY; return s }
     func makeWindow(device:MTLDevice) {
-        window=NSWindow(contentRect:NSRect(x:0,y:0,width:420,height:760),styleMask:[.titled,.closable,.miniaturizable],backing:.buffered,defer:false)
+        window=NSWindow(contentRect:NSRect(x:0,y:0,width:420,height:804),styleMask:[.titled,.closable,.miniaturizable,.fullSizeContentView],backing:.buffered,defer:false)
         window.title="HingeGlass"; window.titlebarAppearsTransparent=true; window.isReleasedWhenClosed=false
         window.backgroundColor = .windowBackgroundColor
+        glassBackground=NSVisualEffectView()
+        glassBackground.blendingMode = .behindWindow
+        glassBackground.material = .hudWindow
+        glassBackground.state = .active
+        glassBackground.translatesAutoresizingMaskIntoConstraints=false
+        window.contentView!.addSubview(glassBackground)
+        NSLayoutConstraint.activate([
+            glassBackground.topAnchor.constraint(equalTo:window.contentView!.topAnchor),
+            glassBackground.bottomAnchor.constraint(equalTo:window.contentView!.bottomAnchor),
+            glassBackground.leadingAnchor.constraint(equalTo:window.contentView!.leadingAnchor),
+            glassBackground.trailingAnchor.constraint(equalTo:window.contentView!.trailingAnchor)
+        ])
         let root=NSStackView(); root.orientation = .vertical; root.alignment = .leading; root.spacing=14
         root.translatesAutoresizingMaskIntoConstraints=false
         window.contentView!.addSubview(root)
-        NSLayoutConstraint.activate([root.topAnchor.constraint(equalTo:window.contentView!.topAnchor,constant:18),root.leadingAnchor.constraint(equalTo:window.contentView!.leadingAnchor,constant:24),root.trailingAnchor.constraint(equalTo:window.contentView!.trailingAnchor,constant:-24)])
+        NSLayoutConstraint.activate([root.topAnchor.constraint(equalTo:(window.contentLayoutGuide as! NSLayoutGuide).topAnchor,constant:18),root.leadingAnchor.constraint(equalTo:window.contentView!.leadingAnchor,constant:24),root.trailingAnchor.constraint(equalTo:window.contentView!.trailingAnchor,constant:-24)])
         func add(_ view:NSView) {
             root.addArrangedSubview(view)
             view.widthAnchor.constraint(equalTo:root.widthAnchor).isActive=true
@@ -129,6 +145,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         enableButton=button("Enable",#selector(toggleEnabled)); enableButton.controlSize = .large
         enableButton.bezelColor = .controlAccentColor
         add(row([heading,spacer,enableButton]))
+
+        glassToggle=NSButton(checkboxWithTitle:"Glass background",target:self,action:#selector(appearanceChanged))
+        glassToggle.state=UserDefaults.standard.bool(forKey:"glassBackgroundEnabled") ? .on : .off
+        appearancePicker=NSPopUpButton(frame:.zero,pullsDown:false)
+        appearancePicker.addItems(withTitles:["System","Light","Dark"])
+        let savedAppearance=UserDefaults.standard.string(forKey:"interfaceAppearance") ?? "System"
+        appearancePicker.selectItem(withTitle:["System","Light","Dark"].contains(savedAppearance) ? savedAppearance : "System")
+        appearancePicker.target=self; appearancePicker.action=#selector(appearanceChanged)
+        appearancePicker.setAccessibilityLabel("Window appearance")
+        let appearanceSpacer=NSView(); appearanceSpacer.setContentHuggingPriority(.defaultLow,for:.horizontal)
+        add(row([glassToggle,appearanceSpacer,appearancePicker]))
+        applyWindowAppearance()
+        notificationTokens.append(NSWorkspace.shared.notificationCenter.addObserver(forName:NSWorkspace.accessibilityDisplayOptionsDidChangeNotification,object:nil,queue:.main) { [weak self] _ in
+            self?.applyWindowAppearance()
+        })
 
         let sensorCaption=label("LID ANGLE",size:11,weight:.medium); sensorCaption.textColor = .secondaryLabelColor
         angleLabel=label("—°",size:48,weight:.light)
@@ -170,6 +201,45 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let hint=label("⌃⌥⌘ Esc to restore  ·  Built-in display only",size:10); hint.textColor = .tertiaryLabelColor
         add(hint)
         window.center()
+    }
+    func runAppearanceCheck() {
+        for style in ["System","Light","Dark"] {
+            for glass in [false,true] {
+                appearancePicker.selectItem(withTitle:style)
+                glassToggle.state=glass ? .on : .off
+                applyWindowAppearance()
+                window.contentView?.layoutSubtreeIfNeeded()
+                let expectedGlass=glass && !NSWorkspace.shared.accessibilityDisplayShouldReduceTransparency
+                guard window.isOpaque == !expectedGlass,
+                      glassBackground.isHidden == !expectedGlass,
+                      (style != "System" || window.appearance == nil),
+                      (style != "Light" || window.appearance?.name == .aqua),
+                      (style != "Dark" || window.appearance?.name == .darkAqua)
+                else { print("FAIL: appearance \(style), glass \(glass)"); exit(1) }
+                print("PASS: appearance \(style), glass \(glass)")
+            }
+        }
+        NSApp.terminate(nil)
+    }
+    @objc func appearanceChanged() {
+        UserDefaults.standard.set(glassToggle.state == .on,forKey:"glassBackgroundEnabled")
+        UserDefaults.standard.set(appearancePicker.titleOfSelectedItem ?? "System",forKey:"interfaceAppearance")
+        applyWindowAppearance()
+    }
+    func applyWindowAppearance() {
+        switch appearancePicker.titleOfSelectedItem {
+        case "Light": window.appearance=NSAppearance(named:.aqua)
+        case "Dark": window.appearance=NSAppearance(named:.darkAqua)
+        default: window.appearance=nil
+        }
+        let glass=glassToggle.state == .on && !NSWorkspace.shared.accessibilityDisplayShouldReduceTransparency
+        glassBackground.isHidden = !glass
+        window.isOpaque = !glass
+        window.backgroundColor = glass ? .clear : .windowBackgroundColor
+        glassToggle.toolTip = NSWorkspace.shared.accessibilityDisplayShouldReduceTransparency
+            ? "Reduce transparency is enabled in macOS Accessibility settings."
+            : "Use a frosted glass window background."
+        window.invalidateShadow()
     }
     func makeMetalView(device:MTLDevice, renderer:GlassRenderer) -> MTKView {
         let v=MTKView(frame:.zero,device:device); v.colorPixelFormat = .bgra8Unorm; v.colorspace=CGColorSpace(name:CGColorSpace.sRGB)
