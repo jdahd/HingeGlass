@@ -72,6 +72,7 @@ public sealed partial class MainWindow
         if(!hotkey)throw new Exception("Hotkey registration failed");
         var screen=System.Windows.Forms.Screen.PrimaryScreen!;
         var fixture=new Window{WindowStyle=WindowStyle.None,WindowState=WindowState.Maximized,Background=Brushes.Lime,ShowInTaskbar=false};
+        Width=MinWidth;Height=MinHeight;Left=screen.Bounds.Left;Top=screen.Bounds.Top;
         int clicks=0;fixture.MouseDown+=(_,_)=>clicks++;
         fixture.Show();Activate();
         try {
@@ -85,7 +86,7 @@ public sealed partial class MainWindow
         if(pixel[1]<200||pixel[0]>50||pixel[2]>50)throw new Exception($"Overlay exclusion failed: {pixel[0]},{pixel[1]},{pixel[2]}");
         SetCursorPos(screen.Bounds.Right-50,screen.Bounds.Top+screen.Bounds.Height/2);
         mouse_event(2,0,0,0,UIntPtr.Zero);mouse_event(4,0,0,0,UIntPtr.Zero);await Task.Delay(200);
-        if(clicks!=1)throw new Exception("Desktop mouse input blocked");
+        if(clicks!=1)throw new Exception($"Desktop mouse input blocked; clicks={clicks}; screen={screen.Bounds}; controls={Left},{Top},{ActualWidth},{ActualHeight}");
         fixture.Background=Brushes.Red;
         for(int i=0;i<30;i++){
             await Task.Delay(100);
