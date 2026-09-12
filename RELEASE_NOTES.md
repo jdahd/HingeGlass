@@ -1,25 +1,14 @@
-# HingeGlass 1.0.0
+# HingeGlass 1.0.1
 
-First packaged release of HingeGlass for Apple silicon MacBooks.
+- Simplified the About panel by removing the copyright line, license file path and icon-generation credit from the visible credits.
+- Preserved the effect attribution and bundled full third-party license.
+- Included the updated English and Chinese installation documentation.
+- The lid effect implementation is unchanged.
 
-HingeGlass maps the built-in lid-angle sensor to a live desktop effect with fixed-bottom perspective, progressive blur and dimming. The English control panel stays clear above the transformed desktop.
+Download `HingeGlass-1.0.1-macOS-arm64.zip`, unzip it and move the app to Applications. Requires macOS 14 or later and an Apple silicon MacBook with a compatible lid-angle sensor. No Windows or Intel build.
 
-## Requirements
+This build is ad hoc signed and not Apple-notarized. Review any macOS security prompt before opening. The Desktop scene requires Screen & System Audio Recording permission; reopen the app if prompted.
 
-- Apple silicon MacBook
-- macOS 14 or later
-- Screen & System Audio Recording permission for the live Desktop scene
+Use Restore or Control–Option–Command–Escape to restore the desktop. Screen frames stay in memory; the app does not record audio or save or upload screen footage.
 
-## Install
-
-1. Download and unzip `HingeGlass-1.0.0-macOS-arm64.zip`.
-2. Move `HingeGlass.app` to Applications.
-3. Because this local build is not Apple-notarized, Control-click the app and choose **Open** if macOS cannot verify the developer.
-4. Allow HingeGlass in **System Settings → Privacy & Security → Screen & System Audio Recording**, then reopen it when prompted.
-5. Select **Desktop**, click **Enable**, open the lid past the configured start angle, and close it slowly.
-
-Use **Restore**, the menu-bar **Pause and Restore** command, or **Control–Option–Command–Escape** to remove the effect immediately.
-
-Screen frames stay in memory. HingeGlass does not capture audio, save screen footage, or upload screen content.
-
-The effect implementation adapts Ruixiang Huang's Macbook_Duo_Effect under the MIT license. Attribution and the full license are bundled with the application and release archive.
+The effect adapts Macbook_Duo_Effect by Ruixiang Huang under MIT. The full copyright and license are included with the app and ZIP.
