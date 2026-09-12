@@ -51,7 +51,7 @@ public sealed partial class MainWindow
         if(live.IsChecked!=true)return;
         // Expansion removes the overlay and stops capture, while keeping follow armed.
         if(shown>=start.Value-.15){if(desktop!=null)StopDesktop();return;}
-        if(desktop!=null){desktop.SetEffect(EffectState.At(shown,start.Value,blur.Value));captureStatus=$"Live · {desktop.Frames} frames · frame age {desktop.Age:0.00}s · max 1600px / 30 Hz";if(desktop.Age>3)RestoreDesktop("Capture stalled; desktop restored");return;}
+        if(desktop!=null){desktop.SetEffect(EffectState.At(shown,start.Value,blur.Value));captureStatus=$"Live · {desktop.CaptureRate:0.0} captures/s · {desktop.Frames} frames · frame age {desktop.Age:0.00}s · max 1600px / 30 Hz";if(desktop.Age>3)RestoreDesktop("Capture stalled; desktop restored");return;}
         if(starting)return;
         starting=true;int token=++generation;
         DesktopEffect? pending=null;
@@ -70,16 +70,29 @@ public sealed partial class MainWindow
     {
         // Exercise real desktop capture, exclusion, threshold restoration and cleanup on Windows.
         if(!hotkey)throw new Exception("Hotkey registration failed");
+        var screen=System.Windows.Forms.Screen.PrimaryScreen!;
+        var fixture=new Window{WindowStyle=WindowStyle.None,WindowState=WindowState.Maximized,Background=Brushes.Lime,ShowInTaskbar=false};
+        fixture.Show();Activate();
+        try {
         angle.Value=75;live.IsChecked=true;
         await Task.Delay(2500);
         if(desktop==null||desktop.Frames<3)throw new Exception("No live frames");
         if(!DesktopEffect.SetWindowDisplayAffinity(handle,0x11))throw new Exception("No exclusion");
+        var first=DesktopEffect.Capture(screen.Bounds);
+        byte[] pixel=new byte[4];
+        first.CopyPixels(new Int32Rect(first.PixelWidth-30,first.PixelHeight/2,1,1),pixel,4,0);
+        if(pixel[1]<200||pixel[0]>50||pixel[2]>50)throw new Exception($"Overlay exclusion failed: {pixel[0]},{pixel[1]},{pixel[2]}");
+        fixture.Background=Brushes.Red;await Task.Delay(300);
+        var second=DesktopEffect.Capture(screen.Bounds);
+        second.CopyPixels(new Int32Rect(second.PixelWidth-30,second.PixelHeight/2,1,1),pixel,4,0);
+        if(pixel[2]<200||pixel[0]>50||pixel[1]>50)throw new Exception("Live source did not change");
         RestoreDesktop("Test restore");await Task.Delay(100);
         if(desktop!=null||live.IsChecked==true||Topmost)throw new Exception("Restore failed");
         angle.Value=75;live.IsChecked=true;await Task.Delay(1500);angle.Value=150;await Task.Delay(600);
         if(desktop!=null)throw new Exception("Expansion failed");
         RestoreDesktop("Smoke complete");
-        System.IO.File.WriteAllText("desktop-test.txt","Live frames, global shortcut registration, manual restoration, expansion restoration passed. Physical sensor and visual capture exclusion need device QA.");
+        System.IO.File.WriteAllText("desktop-test.txt","Live frames, global shortcut registration, manual restoration, expansion restoration passed. Live underlying color change and overlay exclusion passed on hosted runner. Physical sensor and device performance need QA.");
+        } finally {RestoreDesktop("Test cleanup");fixture.Close();}
     }
     [DllImport("user32.dll",SetLastError=true)]static extern bool RegisterHotKey(IntPtr h,int id,uint modifiers,uint key);
     [DllImport("user32.dll")]static extern bool UnregisterHotKey(IntPtr h,int id);

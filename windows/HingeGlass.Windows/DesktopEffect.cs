@@ -24,6 +24,7 @@ internal sealed class DesktopEffect : Window
     public double LastFrame {get;private set;}
     public event Action<string>? Failed;
     readonly Stopwatch clock=Stopwatch.StartNew();
+    public double CaptureRate=>Frames/Math.Max(.001,clock.Elapsed.TotalSeconds);
     public double Age=>clock.Elapsed.TotalSeconds-LastFrame;
     public DesktopEffect(System.Windows.Forms.Screen screen)
     {
@@ -38,6 +39,7 @@ internal sealed class DesktopEffect : Window
             SetWindowLongPtr(h,-20,new IntPtr(GetWindowLongPtr(h,-20).ToInt64()|0x20|0x08000000|0x80));
             SetWindowPos(h,new IntPtr(-1),bounds.X,bounds.Y,bounds.Width,bounds.Height,0x10);
         };
+        Loaded+=(_,_)=>SetWindowPos(new WindowInteropHelper(this).Handle,new IntPtr(-1),bounds.X,bounds.Y,bounds.Width,bounds.Height,0x10);
         Closed+=(_,_)=>cancellation.Cancel();
     }
     public void SetEffect(EffectState s)

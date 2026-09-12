@@ -19,14 +19,14 @@ Extract the entire ZIP to a folder and open `HingeGlass.exe`. Keep the accompany
 - **Open image…** loads a local image.
 - **Take desktop snapshot** briefly hides the app and captures the primary display once. It stays in memory; this is not live desktop capture.
 - **Detect angle sensor** probes Windows' `HingeAngleSensor`. If available, move the lid slowly and inspect the angle/readings count. Do not fully close the lid during testing.
-- **Follow sensor in preview** is enabled after a valid reading. Angle conventions may differ; verify before using. It affects only the preview. The last angle is held between sensor events; a stationary lid may not emit new readings. Use Esc to stop following.
-- **Restore preview** or **Esc** stops following and opens the preview angle.
+- **Follow lid angle** is enabled after a valid reading. Angle conventions may differ; verify before using. It also drives the desktop while live mode is enabled. The last angle is held between sensor events; a stationary lid may not emit new readings. Use Esc to stop following.
+- **Pause and restore** or **Esc** stops following and opens the preview angle.
 
 No account, network calls, audio capture, background service or automatic desktop overlay. No screen image is saved during normal use. Closing the window quits the app. This preview does not change lid-close sleep settings and does not persist preferences.
 
 ## Known limits
 
-No live desktop capture or full-screen effect overlay yet. WPF uses a subdivided trapezoid and uniform blur; the Mac version's gradient blur is not reproduced exactly. Hardware rendering availability and performance depend on the machine. A successful build does not validate a laptop sensor. No Windows laptop model has been physically validated for this preview.
+WPF uses a subdivided trapezoid and uniform blur; the Mac version's gradient blur is not reproduced exactly. Hardware rendering availability and performance depend on the machine. A successful build does not validate a laptop sensor. No Windows laptop model has been physically validated for this preview.
 
 If sensor detection returns no compatible sensor, manual mode remains usable. That result does not prove the hardware lacks any sensor; its driver may not expose the standard Windows API.
 
@@ -38,7 +38,7 @@ Include computer model, Windows version, whether the app opens, sensor status, w
 
 `dotnet publish HingeGlass.Windows/HingeGlass.Windows.csproj -c Release -r win-x64 --self-contained true`
 
-GitHub Actions builds on Windows, runs effect boundary checks and a UI startup/render smoke check, verifies the animated installer motion and complete installation/uninstallation, then uploads a portable ZIP and Setup and a generated sample-scene screenshot. `--self-test` exits with a test result; `--ui-smoke` explicitly writes `windows-preview.png` using the generated landscape only. Real hardware sensor and desktop capture testing are still needed.
+GitHub Actions builds on Windows, runs effect boundary checks and a UI startup/render smoke check, verifies the animated installer motion and complete installation/uninstallation, then uploads a portable ZIP and Setup and a generated sample-scene screenshot. `--self-test` exits with a test result; `--ui-smoke` explicitly writes `windows-preview.png` using the generated landscape only. Automated live capture/restoration checks run on the hosted Windows runner; real hardware sensor and visual performance testing are still needed.
 
 Effect formulas are adapted from the Mac renderer, derived from Ruixiang Huang's Macbook_Duo_Effect (MIT). See bundled ThirdPartyNotices.txt. The existing HingeGlass icon is reused.
 
@@ -50,4 +50,4 @@ Choose a display and enable **Enable live desktop**. Lower **Manual angle** belo
 
 The **Compatibility monitor** shows recent angles, event frequency, longest interval, large steps, render callbacks and capture state. Move the lid slowly to verify a real changing signal. Stationary time can lower the reported event rate; this alone does not prove poor sensor performance. Copy diagnostics for feedback. This is a diagnostic aid, not a supported-model certification.
 
-This version adds a bounded CPU/GDI live capture path, up to 1600px wide and 30 captures per second, with WPF effects. It is not a promise of Mac performance or visual parity. Physical lid response, mixed DPI, graphics drivers and protected content still require real-device checks. The earlier sections describing snapshot-only preview apply to 0.1.x; live mode is now available separately from image/snapshot preview.
+This version adds a bounded CPU/GDI live capture path, up to 1600px wide and 30 captures per second, with WPF effects. It is not a promise of Mac performance or visual parity. Physical lid response, mixed DPI, graphics drivers and protected content still require real-device checks. Live mode is available separately from image/snapshot preview.
