@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 namespace HingeGlass.Windows;
 // Bounded CPU capture fallback; one frame in flight, maximum 1600 pixels wide / 30 Hz.
-internal sealed class DesktopEffect : Window
+internal sealed class DesktopEffect : System.Windows.Forms.Form
 {
     readonly ImageBrush image=new(){Stretch=Stretch.Fill};
     readonly MeshGeometry3D mesh=new();
@@ -28,21 +28,21 @@ internal sealed class DesktopEffect : Window
     public double Age=>clock.Elapsed.TotalSeconds-LastFrame;
     public DesktopEffect(System.Windows.Forms.Screen screen)
     {
-        bounds=screen.Bounds;WindowStyle=WindowStyle.None;AllowsTransparency=true;ResizeMode=ResizeMode.NoResize;
-        ShowInTaskbar=false;ShowActivated=false;Topmost=true;Background=Brushes.Black;
-        // WPF owns layered-window setup. A near-opaque window also keeps underlying surfaces composing.
+        bounds=screen.Bounds;FormBorderStyle=System.Windows.Forms.FormBorderStyle.None;
+        StartPosition=System.Windows.Forms.FormStartPosition.Manual;Bounds=bounds;
+        ShowInTaskbar=false;TopMost=true;BackColor=System.Drawing.Color.Black;
+        // Constant-alpha native host supports capture exclusion and cross-process click-through.
         Opacity=254.0/255.0;
         var viewport=new Viewport3D{Camera=new OrthographicCamera(new Point3D(0,0,4),new Vector3D(0,0,-1),new Vector3D(0,1,0),2),Effect=blur};
         viewport.Children.Add(new ModelVisual3D{Content=new GeometryModel3D{Geometry=mesh,Material=new EmissiveMaterial(image)}});
-        var grid=new Grid();grid.Children.Add(viewport);grid.Children.Add(dim);Content=grid;
-        SourceInitialized+=(_,_)=>{
-            var h=new WindowInteropHelper(this).Handle;
-            if(!SetWindowDisplayAffinity(h,0x11))throw new InvalidOperationException("Capture exclusion is unavailable.");
-            SetWindowLongPtr(h,-20,new IntPtr(GetWindowLongPtr(h,-20).ToInt64()|0x20|0x08000000|0x80));
-            SetWindowPos(h,new IntPtr(-1),bounds.X,bounds.Y,bounds.Width,bounds.Height,0x10);
-        };
-        Loaded+=(_,_)=>SetWindowPos(new WindowInteropHelper(this).Handle,new IntPtr(-1),bounds.X,bounds.Y,bounds.Width,bounds.Height,0x10);
-        Closed+=(_,_)=>cancellation.Cancel();
+        var grid=new Grid();grid.Children.Add(viewport);grid.Children.Add(dim);
+        var host=new System.Windows.Forms.Integration.ElementHost{Dock=System.Windows.Forms.DockStyle.Fill,Child=grid};Controls.Add(host);
+        Disposed+=(_,_)=>cancellation.Cancel();
+    }
+    protected override bool ShowWithoutActivation=>true;
+    protected override System.Windows.Forms.CreateParams CreateParams
+    {
+        get {var p=base.CreateParams;p.ExStyle|=0x20|0x08000000|0x80;return p;}
     }
     public void SetEffect(EffectState s)
     {
@@ -55,7 +55,8 @@ internal sealed class DesktopEffect : Window
     {
         image.ImageSource=await Task.Run(()=>Capture(bounds));
         if(cancellation.IsCancellationRequested)return;
-        Show();
+        if(!SetWindowDisplayAffinity(Handle,0x11))throw new InvalidOperationException($"Capture exclusion unavailable (0x{Marshal.GetLastWin32Error():X})");
+        Show();Bounds=bounds;
         _=Loop();
     }
     async Task Loop()
@@ -77,7 +78,4 @@ internal sealed class DesktopEffect : Window
     }
     [DllImport("gdi32.dll")]static extern bool DeleteObject(IntPtr h);
     [DllImport("user32.dll",SetLastError=true)]internal static extern bool SetWindowDisplayAffinity(IntPtr h,uint value);
-    [DllImport("user32.dll",EntryPoint="GetWindowLongPtrW")]static extern IntPtr GetWindowLongPtr(IntPtr h,int index);
-    [DllImport("user32.dll",EntryPoint="SetWindowLongPtrW")]static extern IntPtr SetWindowLongPtr(IntPtr h,int index,IntPtr value);
-    [DllImport("user32.dll")]static extern bool SetWindowPos(IntPtr h,IntPtr after,int x,int y,int w,int height,uint flags);
 }
