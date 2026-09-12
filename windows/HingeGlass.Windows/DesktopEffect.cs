@@ -28,7 +28,7 @@ internal sealed class DesktopEffect : Window
     public double Age=>clock.Elapsed.TotalSeconds-LastFrame;
     public DesktopEffect(System.Windows.Forms.Screen screen)
     {
-        bounds=screen.Bounds;WindowStyle=WindowStyle.None;ResizeMode=ResizeMode.NoResize;
+        bounds=screen.Bounds;WindowStyle=WindowStyle.None;AllowsTransparency=true;ResizeMode=ResizeMode.NoResize;
         ShowInTaskbar=false;ShowActivated=false;Topmost=true;Background=Brushes.Black;
         // WPF owns layered-window setup. A near-opaque window also keeps underlying surfaces composing.
         Opacity=254.0/255.0;
