@@ -1,4 +1,11 @@
-# HingeGlass
+<h1 align="center">
+  <picture>
+    <source media="(prefers-reduced-motion: reduce) and (prefers-color-scheme: dark)" srcset="docs/images/title-dark-static.svg">
+    <source media="(prefers-reduced-motion: reduce)" srcset="docs/images/title-light-static.svg">
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/title-dark.svg">
+    <img src="docs/images/title-light.svg" alt="HingeGlass — A little motion. A softer view." width="100%">
+  </picture>
+</h1>
 
 A quiet lid effect for your Mac. As you close the display, your live desktop gains perspective, progressive blur and dimming. The English settings panel stays clear and floats above the effect.
 
