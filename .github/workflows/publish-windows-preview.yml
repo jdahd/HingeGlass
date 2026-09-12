@@ -1,0 +1,33 @@
+name: Publish Windows preview
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Successful Windows preview build run ID
+        required: true
+permissions:
+  contents: write
+  actions: read
+jobs:
+  publish:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publish verified build as prerelease
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          BUILD_RUN_ID: ${{ inputs.run_id }}
+        run: |
+          if ($env:BUILD_RUN_ID -notmatch '^\d+$') { throw 'Invalid run ID' }
+          $run = gh api "repos/$env:GH_REPO/actions/runs/$env:BUILD_RUN_ID" | ConvertFrom-Json
+          if ($run.conclusion -ne 'success' -or $run.path -ne '.github/workflows/windows-preview.yml' -or $run.head_branch -ne 'main' -or $run.event -ne 'push') { throw 'Expected a successful main-branch preview build' }
+          gh run download $env:BUILD_RUN_ID --name windows-preview --dir verified
+          if ($LASTEXITCODE) { throw 'Artifact download failed' }
+          $zip = 'verified/HingeGlass-0.1.0-Windows-x64-preview.zip'
+          $expected = ((Get-Content "$zip.sha256").Trim() -split '\s+')[0]
+          if ((Get-FileHash $zip -Algorithm SHA256).Hash.ToLower() -ne $expected) { throw 'Checksum mismatch' }
+          gh release create windows-v0.1.0-preview $zip "$zip.sha256" verified/windows-preview.png --target $run.head_sha --title 'HingeGlass Windows 0.1.0 Preview' --notes-file windows/RELEASE_NOTES.md --prerelease --latest=false
+          if ($LASTEXITCODE) { throw 'Release creation failed' }
