@@ -83,6 +83,12 @@ begin
     'Explore perspective and blur. Try your own images. See if your laptop can read its lid angle.' + #13#10 + #13#10 +
     'A preview inside the app. Live desktop effects are still in development.';
   WizardForm.PageNameLabel.Font.Size := 14;
+  WizardForm.PageNameLabel.Height := ScaleY(26);
+  WizardForm.PageDescriptionLabel.Top := WizardForm.PageNameLabel.Top + ScaleY(30);
+  WizardForm.PageDescriptionLabel.Height := ScaleY(34);
+  WizardForm.MainPanel.Height := ScaleY(86);
+  WizardForm.InnerNotebook.Top := ScaleY(94);
+  WizardForm.InnerNotebook.Height := WizardForm.InnerPage.ClientHeight - ScaleY(106);
   WizardForm.FinishedHeadingLabel.SetBounds(ScaleX(230), ScaleY(76), WizardForm.FinishedPage.ClientWidth - ScaleX(262), ScaleY(92));
   WizardForm.FinishedHeadingLabel.Font.Size := 25;
   WizardForm.FinishedHeadingLabel.Caption := 'You''re all set.';
@@ -104,6 +110,11 @@ begin
     wpSelectTasks: StepLabel.Caption := '03  /  Make it yours';
     wpReady: StepLabel.Caption := '04  /  Ready to install';
     wpInstalling: StepLabel.Caption := 'Installing HingeGlass...';
-    wpFinished: StepLabel.Caption := 'Ready when you are.';
+    wpFinished: begin
+      StepLabel.Caption := 'Ready when you are.';
+      WizardForm.FinishedLabel.SetBounds(ScaleX(230), ScaleY(182), WizardForm.FinishedPage.ClientWidth - ScaleX(262), ScaleY(84));
+      WizardForm.FinishedLabel.Caption := 'HingeGlass is ready.' + #13#10 + #13#10 + 'Start with the angle slider, then check your lid sensor.';
+      WizardForm.RunList.SetBounds(ScaleX(230), ScaleY(286), WizardForm.FinishedPage.ClientWidth - ScaleX(262), ScaleY(48));
+    end;
   end;
 end;
