@@ -1,6 +1,6 @@
-First experimental Windows x64 preview of HingeGlass.
+Experimental Windows x64 preview of HingeGlass. Version 0.1.1 improves dark-interface label readability and aligns the automated preview angle with its slider.
 
-Download `HingeGlass-0.1.0-Windows-x64-preview.zip`, extract the **entire folder**, then open `HingeGlass.exe`. Windows 10 version 2004+ / Windows 11 x64; the .NET runtime is included.
+Download `HingeGlass-0.1.1-Windows-x64-preview.zip`, extract the **entire folder**, then open `HingeGlass.exe`. Windows 10 version 2004+ / Windows 11 x64; the .NET runtime is included.
 
 ### Included
 - Manual angle, start angle and blur controls.

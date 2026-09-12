@@ -32,14 +32,14 @@ jobs:
         run: |
           Copy-Item windows/README.md dist/HingeGlass-Windows/README.md
           Copy-Item ThirdPartyNotices/Macbook_Duo_Effect.txt dist/HingeGlass-Windows/ThirdPartyNotices.txt
-          Compress-Archive -Path dist/HingeGlass-Windows -DestinationPath HingeGlass-0.1.0-Windows-x64-preview.zip
-          $hash = (Get-FileHash HingeGlass-0.1.0-Windows-x64-preview.zip -Algorithm SHA256).Hash.ToLower()
-          "$hash  HingeGlass-0.1.0-Windows-x64-preview.zip" | Set-Content HingeGlass-0.1.0-Windows-x64-preview.zip.sha256
+          Compress-Archive -Path dist/HingeGlass-Windows -DestinationPath HingeGlass-0.1.1-Windows-x64-preview.zip
+          $hash = (Get-FileHash HingeGlass-0.1.1-Windows-x64-preview.zip -Algorithm SHA256).Hash.ToLower()
+          "$hash  HingeGlass-0.1.1-Windows-x64-preview.zip" | Set-Content HingeGlass-0.1.1-Windows-x64-preview.zip.sha256
       - uses: actions/upload-artifact@v4
         with:
           name: windows-preview
           path: |
-            HingeGlass-0.1.0-Windows-x64-preview.zip
-            HingeGlass-0.1.0-Windows-x64-preview.zip.sha256
+            HingeGlass-0.1.1-Windows-x64-preview.zip
+            HingeGlass-0.1.1-Windows-x64-preview.zip.sha256
             windows-preview.png
           retention-days: 14

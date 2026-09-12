@@ -19,7 +19,7 @@ public sealed class MainWindow : Window
     readonly Slider blur=new(){Minimum=0,Maximum=80,Value=68};
     readonly TextBlock value=new(){FontSize=48,Margin=new Thickness(0,4,0,12)};
     readonly TextBlock status=new(){Text="Detect the sensor to check this computer.",TextWrapping=TextWrapping.Wrap};
-    readonly CheckBox follow=new(){Content="Follow sensor in preview",IsEnabled=false,Margin=new Thickness(0,12,0,12)};
+    readonly CheckBox follow=new(){Content="Follow sensor in preview",Foreground=Brushes.LightGray,IsEnabled=false,Margin=new Thickness(0,12,0,12)};
     readonly MeshGeometry3D mesh=new();
     readonly Viewport3D viewport=new();
     readonly BlurEffect blurEffect=new(){RenderingBias=RenderingBias.Performance};
@@ -36,8 +36,8 @@ public sealed class MainWindow : Window
     double lastAspect;
     public MainWindow()
     {
-        Title="HingeGlass · Windows Preview 0.1";
-        Width=1020;Height=700;MinWidth=720;MinHeight=580;
+        Title="HingeGlass · Windows Preview 0.1.1";
+        Width=1020;Height=760;MinWidth=720;MinHeight=580;
         Background=new SolidColorBrush(Color.FromRgb(19,25,35));Foreground=Brushes.White;
         FontFamily=new FontFamily("Segoe UI");FontSize=14;
         var root=new Grid{Margin=new Thickness(24)};
@@ -165,7 +165,7 @@ public sealed class MainWindow : Window
     }
     internal void SavePreview(string path)
     {
-        follow.IsChecked=false;shown=75;Draw();UpdateLayout();
+        follow.IsChecked=false;angle.Value=75;shown=75;Draw();UpdateLayout();
         var bitmap=new RenderTargetBitmap((int)ActualWidth,(int)ActualHeight,96,96,PixelFormats.Pbgra32);bitmap.Render(this);
         var encoder=new PngBitmapEncoder();encoder.Frames.Add(BitmapFrame.Create(bitmap));using var file=File.Create(path);encoder.Save(file);
     }

@@ -1,4 +1,6 @@
-# HingeGlass · Windows Preview 0.1
+# HingeGlass · Windows Preview 0.1.1
+
+[Download Windows Preview](https://github.com/jdahd/HingeGlass/releases/tag/windows-v0.1.1-preview)
 
 Experimental Windows x64 preview. This is a separate early Windows implementation, not feature parity with the Mac release. Windows 10 version 2004 or later / Windows 11. Windows-on-ARM and HarmonyOS are not validated targets.
 
