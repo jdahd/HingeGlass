@@ -39,6 +39,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     var lastSensorTime = CACurrentMediaTime()
     var healthTimer: Timer?
     var artwork: CGImage!
+    var importedOriginal: CGImage?
+    var imagePlacement=ImagePlacement()
+    var imageEditor: ImageCropEditor?
+    var adjustImageButton: NSButton!
     var liveDesktop: LiveDesktop?
     var demoTimer: Timer?
     var overlayStarted: Date?
@@ -116,7 +120,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func button(_ text:String, _ action:Selector) -> NSButton { let b=NSButton(title:text,target:self,action:action); b.bezelStyle = .rounded; return b }
     func row(_ views:[NSView]) -> NSStackView { let s=NSStackView(views:views); s.orientation = .horizontal; s.spacing=12; s.alignment = .centerY; return s }
     func makeWindow(device:MTLDevice) {
-        window=NSWindow(contentRect:NSRect(x:0,y:0,width:420,height:804),styleMask:[.titled,.closable,.miniaturizable,.fullSizeContentView],backing:.buffered,defer:false)
+        window=NSWindow(contentRect:NSRect(x:0,y:0,width:420,height:880),styleMask:[.titled,.closable,.miniaturizable,.fullSizeContentView],backing:.buffered,defer:false)
         window.title="HingeGlass"; window.titlebarAppearsTransparent=true; window.isReleasedWhenClosed=false
         window.backgroundColor = .windowBackgroundColor
         glassBackground=NSVisualEffectView()
@@ -197,9 +201,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         sourceControl=NSSegmentedControl(labels:["Landscape","Desktop"],trackingMode:.selectOne,target:self,action:#selector(changeSource)); sourceControl.selectedSegment=0
         let sourceSpacer=NSView(); sourceSpacer.setContentHuggingPriority(.defaultLow,for:.horizontal)
         add(row([label("Scene",weight:.medium),sourceSpacer,sourceControl,button("Image…",#selector(chooseImage))]))
+        adjustImageButton=button("Crop / resize image…",#selector(adjustImage)); adjustImageButton.isEnabled=false
+        add(adjustImageButton)
         preview=makeMetalView(device:device,renderer:previewRenderer)
         preview.wantsLayer=true; preview.layer?.cornerRadius=12; preview.layer?.masksToBounds=true
-        add(preview); preview.heightAnchor.constraint(equalToConstant:170).isActive=true
+        add(preview); preview.heightAnchor.constraint(equalTo:preview.widthAnchor,multiplier:(builtInScreen()?.frame.height ?? 1000)/(builtInScreen()?.frame.width ?? 1600)).isActive=true
         slider=NSSlider(value:0,minValue:0,maxValue:1,target:self,action:#selector(scrub)); slider.isContinuous=true; slider.setAccessibilityLabel("Preview lid closure")
         slider.setContentHuggingPriority(.defaultLow,for:.horizontal)
         add(row([slider,button("Play",#selector(playDemo)),button("Try full screen",#selector(fullScreenDemo))]))
@@ -557,10 +563,28 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let panel=NSOpenPanel(); panel.allowedContentTypes=[.png,.jpeg,.heic,.tiff]; panel.canChooseDirectories=false
         panel.beginSheetModal(for:window) { [weak self] result in
             guard let self,result == .OK,let url=panel.url,let image=NSImage(contentsOf:url),let cg=image.cgImage(forProposedRect:nil,context:nil,hints:nil) else { return }
-            self.emergencyStop(); self.capturingScreen=false; self.sourceControl.selectedSegment=0
-            self.enableButton.isEnabled=true
-            self.artwork=cg; self.setImages(cg); self.infoLabel.stringValue="Custom image loaded for this session."
+            self.presentImageEditor(cg, placement:ImagePlacement())
         }
+    }
+    @objc func adjustImage() {
+        guard let image=importedOriginal else { return }
+        emergencyStop(); presentImageEditor(image,placement:imagePlacement)
+    }
+    func presentImageEditor(_ original:CGImage, placement:ImagePlacement) {
+        let screen=builtInScreen() ?? NSScreen.main
+        let frame=screen?.frame.size ?? CGSize(width:1600,height:1000)
+        let scale=screen?.backingScaleFactor ?? 1
+        let editor=ImageCropEditor(image:original,size:CGSize(width:frame.width*scale,height:frame.height*scale),placement:placement)
+        imageEditor=editor
+        editor.completion = { [weak self] image, placement in
+            guard let self else { return }
+            self.emergencyStop(); self.capturingScreen=false; self.sourceControl.selectedSegment=0
+            self.enableButton.isEnabled=true; self.importedOriginal=original; self.imagePlacement=placement
+            self.artwork=image; self.setImages(image); self.adjustImageButton.isEnabled=true
+            self.infoLabel.stringValue="Image ready. Crop and size can be adjusted again during this session."
+        }
+        // Wait until the file picker sheet has fully closed before showing the editor.
+        DispatchQueue.main.async { self.window.beginSheet(editor.panel) }
     }
     func applicationShouldTerminateAfterLastWindowClosed(_ sender:NSApplication) -> Bool { false }
     func applicationWillTerminate(_ notification:Notification) {
@@ -715,5 +739,5 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 let app=NSApplication.shared
 let delegate=AppDelegate()
 app.delegate=delegate
-app.setActivationPolicy(.regular)
+app.setActivationPolicy(.accessory)
 app.run()
