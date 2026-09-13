@@ -1,6 +1,6 @@
 # HingeGlass for Windows
 
-**0.2.1 · Experimental preview** · [Download](https://github.com/jdahd/HingeGlass/releases/tag/windows-v0.2.1-preview) · [Project overview](../README.md)
+**0.2.2 · Experimental preview** · [Download](https://github.com/jdahd/HingeGlass/releases/tag/windows-v0.2.2-preview) · [Project overview](../README.md)
 
 Live desktop perspective, blur and dimming on Windows 10 version 2004+ / Windows 11 x64. You can use manual desktop effects without an angle sensor. Automatic lid following requires readable angle data; it is not supported on every laptop.
 
@@ -8,8 +8,8 @@ Live desktop perspective, blur and dimming on Windows 10 version 2004+ / Windows
 
 | Package | How to use it |
 | --- | --- |
-| **HingeGlass-0.2.1-Windows-x64-Setup.exe** | Run Setup, enter an **Installation folder** or click **Change…**, then click **Install HingeGlass**. Use **Open HingeGlass** when finished. |
-| **HingeGlass-0.2.1-Windows-x64-preview.zip** | Extract the entire archive, then open **HingeGlass.exe**. Keep the accompanying files together. |
+| **HingeGlass-0.2.2-Windows-x64-Setup.exe** | Run Setup, enter an **Installation folder** or click **Change…**, then click **Install HingeGlass**. Use **Open HingeGlass** when finished. |
+| **HingeGlass-0.2.2-Windows-x64-preview.zip** | Extract the entire archive, then open **HingeGlass.exe**. Keep the accompanying files together. |
 
 Setup installs for the current user into a writable folder and creates a Start menu entry. It does not create a desktop shortcut. Uninstall through **Windows Settings → Apps**. The .NET runtime is included. The installer is unsigned, so Windows may display a reputation warning.
 
@@ -67,3 +67,7 @@ dotnet publish windows/HingeGlass.Windows/HingeGlass.Windows.csproj -c Release -
 `--self-test` runs logic checks. `--ui-smoke` explicitly writes a generated-scene preview image. `--desktop-smoke` creates test windows, exercises desktop capture and recovery, and writes a test result. These switches are for controlled development environments.
 
 The effect formula derives from Ruixiang Huang's Macbook_Duo_Effect (MIT). See [the third-party notice](../ThirdPartyNotices/Macbook_Duo_Effect.txt). The existing HingeGlass icon is reused.
+
+## Remembering and resuming desktop effects
+
+Your live-desktop choice, follow preference, selected display and angle/blur controls are saved in `%LOCALAPPDATA%/HingeGlass/desktop-settings.json`. The app pauses capture at lock/sleep and resumes on unlock/wake if still enabled. Manual disable or the restore shortcut keeps it off. This does not add launch-at-login or lock-screen effects. Capture errors are shown in the status area; re-enable after resolving them.

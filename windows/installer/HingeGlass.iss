@@ -1,4 +1,4 @@
-#define AppVersion "0.2.1"
+#define AppVersion "0.2.2"
 [Setup]
 AppId={{91950675-B1C2-4B82-9899-42735156E413}
 AppName=HingeGlass Windows Preview

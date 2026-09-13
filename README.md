@@ -19,7 +19,7 @@ Desktop perspective, blur and dimming, controlled by a lid angle or a manual sli
 | Platform | Current version | Download | Requirements |
 | --- | --- | --- | --- |
 | **macOS** | **1.1.1 · Stable** | [Mac ZIP](https://github.com/jdahd/HingeGlass/releases/download/v1.1.1/HingeGlass-1.1.1-macOS-arm64.zip) · [Release notes](https://github.com/jdahd/HingeGlass/releases/tag/v1.1.1) | macOS 14+, Apple silicon MacBook with a compatible lid-angle sensor |
-| **Windows** | **0.2.1 · Preview** | [Setup.exe](https://github.com/jdahd/HingeGlass/releases/download/windows-v0.2.1-preview/HingeGlass-0.2.1-Windows-x64-Setup.exe) · [Portable ZIP](https://github.com/jdahd/HingeGlass/releases/download/windows-v0.2.1-preview/HingeGlass-0.2.1-Windows-x64-preview.zip) | Windows 10 2004+ / Windows 11, x64; automatic following requires a compatible sensor |
+| **Windows** | **0.2.2 · Preview** | [Setup.exe](https://github.com/jdahd/HingeGlass/releases/download/windows-v0.2.2-preview/HingeGlass-0.2.2-Windows-x64-Setup.exe) · [Portable ZIP](https://github.com/jdahd/HingeGlass/releases/download/windows-v0.2.2-preview/HingeGlass-0.2.2-Windows-x64-preview.zip) | Windows 10 2004+ / Windows 11, x64; automatic following requires a compatible sensor |
 
 **No angle sensor? Windows manual desktop effects still work.** A successful installation does not mean the laptop can report its lid angle. See [compatibility](#compatibility) before expecting automatic lid following.
 
@@ -66,7 +66,7 @@ Setup installs for the current user into a writable folder and adds a Start menu
 
 ## Compatibility
 
-| Capability | macOS 1.1.1 | Windows 0.2.1 |
+| Capability | macOS 1.1.1 | Windows 0.2.2 |
 | --- | --- | --- |
 | Live desktop perspective, blur and dimming | Available | Available, experimental |
 | Automatic lid following | Requires a compatible built-in sensor | Requires a sensor exposed through the supported Windows API |
@@ -106,7 +106,7 @@ Windows pauses on sleep, lock, display changes and capture errors. Opening past 
 </picture></h2>
 
 - **[macOS 1.1.1](https://github.com/jdahd/HingeGlass/releases/tag/v1.1.1)** — adjustable glass transparency. [Mac release notes](RELEASE_NOTES.md)
-- **[Windows 0.2.1 Preview](https://github.com/jdahd/HingeGlass/releases/tag/windows-v0.2.1-preview)** — selectable Setup destination, live desktop effects and compatibility monitoring. [Windows release notes](windows/RELEASE_NOTES.md)
+- **[Windows 0.2.2 Preview](https://github.com/jdahd/HingeGlass/releases/tag/windows-v0.2.2-preview)** — selectable Setup destination, live desktop effects and compatibility monitoring. [Windows release notes](windows/RELEASE_NOTES.md)
 - [Previous releases](https://github.com/jdahd/HingeGlass/releases) remain available for version history and rollback.
 
 <h2 id="development"><picture>
