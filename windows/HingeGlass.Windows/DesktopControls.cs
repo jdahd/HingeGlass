@@ -74,7 +74,7 @@ public sealed partial class MainWindow
         displays.DisplayMemberPath="DeviceName";displays.SelectedIndex=0;
         controls.Children.Add(displays);controls.Children.Add(live);
         live.Checked+=(_,_)=>{if(!hotkey){live.IsChecked=false;status.Text="Global restore shortcut unavailable. Close conflicting apps and reopen HingeGlass.";}};
-        live.Checked+=(_,_)=>SaveDesktopPreferences();
+        live.Checked+=(_,_)=>{SaveDesktopPreferences();if(live.IsChecked==true&&!loadingPreferences)ResumeDesktop();};
         live.Unchecked+=(_,_)=>{pendingFollow=false;StopDesktop();SaveDesktopPreferences();};
         displays.SelectionChanged+=(_,_)=>{StopDesktop();SaveDesktopPreferences();};
         foreach(var slider in new[]{angle,start,blur})slider.ValueChanged+=(_,_)=>SaveDesktopPreferences();
